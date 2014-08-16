@@ -19,8 +19,8 @@ $(document).ready(function(){
     $("nav ul.current-page li:first-child a").parent().addClass("active");
   });
 
-  var home = $("nav ul.pages li a").filter(function() { $(this).attr('href') == 'index.html'; });
-  $("nav ul.pages").prepend(home.parent());
+  // var home = $("nav ul.pages li a").filter(function() { $(this).attr('href') == 'index.html'; });
+  // $("nav ul.pages").prepend(home.parent());
   
   $("nav ul.current-page li").on("click", "a", function(event) {
     var position = $($(this).attr("href")).offset().top - 190;
