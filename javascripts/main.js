@@ -19,9 +19,12 @@ $(document).ready(function(){
     $("nav ul.current-page li:first-child a").parent().addClass("active");
   });
 
-  var home = $("nav ul.pages li a").filter(function() { $(this).attr('href') == 'index.html'; });
-  alert(home);
-  // $("nav ul.pages").prepend(home.parent());
+  try {
+    var home = $("nav ul.pages li a").filter(function() { $(this).attr('href') == 'index.html'; });
+    $("nav ul.pages").prepend(home.parent());
+  } catch(err) {
+    alert(err);
+  }
   
   $("nav ul.current-page li").on("click", "a", function(event) {
     var position = $($(this).attr("href")).offset().top - 190;
