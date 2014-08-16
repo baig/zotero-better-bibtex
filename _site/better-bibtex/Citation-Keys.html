@@ -1,0 +1,418 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Zotero-better-bibtex by ZotPlus</title>
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script src="javascripts/main.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+  </head>
+  <body>
+
+      <header>
+        <h1>Zotero-better-bibtex 0.6.10
+</h1>
+        <p></p>
+      </header>
+
+      <div id="banner">
+        <span id="logo"></span>
+
+        <a href="https://github.com/ZotPlus/zotero-better-bibtex" class="button fork"><strong>View On GitHub</strong></a>
+        <div class="downloads">
+          <span>Downloads:</span>
+          <ul>
+            <li><a href="https://github.com/ZotPlus/zotero-better-bibtex/zipball/master" class="button">ZIP</a></li>
+            <li><a href="https://github.com/ZotPlus/zotero-better-bibtex/tarball/master" class="button">TAR</a></li>
+          </ul>
+        </div>
+      </div><!-- end banner -->
+
+    <div class="wrapper">
+      <nav>
+        <ul class="projects">
+          
+            
+            
+          
+            
+            
+          
+            
+            
+          
+            
+            
+          
+            
+            
+              <li><a  href="/better-bibtex/index.html">Home</a></li>
+            
+          
+        </ul>
+        
+        <ul class="pages">
+          
+          
+            
+          
+            
+          
+            
+          
+            
+              <li><a  href="/better-bibtex/index.html">Home</a></li>
+            
+          
+            
+              <li><a  href="/better-bibtex/Customized-Exports.html">Customized Exports</a></li>
+            
+          
+          
+            
+              <li><a class="active" href="/better-bibtex/Citation-Keys.html">Citation Keys</a></li>
+            
+          
+            
+          
+            
+              <li><a  href="/better-bibtex/Pull-Export.html">Pull Export</a></li>
+            
+          
+            
+              <li><a  href="/better-bibtex/Support-Request-Guidelines.html">Support Request Guidelines</a></li>
+            
+          
+            
+          
+        </ul>
+        <ul class="current-page"></ul>
+      </nav>
+      <section>
+        <h3>Citation Keys</h3>
+
+        <p>BBT offers you control over your citation keys.</p>
+
+<h1 id="set-your-own-fixed-citation-keys">Set your own, fixed citation keys</h1>
+
+<p>You can fix the citation key for a reference by adding the text “bibtex: [your citekey]” (sans quotes) anywhere in the
+“extra” field of the reference, or by using biblatexcitekey[my_key]. You can generate a fixed citation key by
+selecting references, right-clicking, and selecting “Generate BibTeX key”.</p>
+
+<h1 id="drag-and-drophotkey-citations">Drag and drop/hotkey citations</h1>
+
+<p>You can drag and drop citations into your LaTeX editor, and it will add a proper \cite{citekey}. The actual command is
+configurable by setting the config option in the BBT preferences (see below). Do not include the leading backslash. This
+feature requires a one-time setup: go to zotero preferences, tab Export, under Default Output Format, select “LaTeX Citation”.</p>
+
+<p>If you want even more convenience (and you’re on Windows), install <a href="http://www.autohotkey.com/">AutoHotKey</a>, modify the
+<a href="https://raw.github.com/ZotPlus/zotero-better-bibtex/master/FastCite.ahk">Zotero sample macro</a>, and add it to your AutoHotKey.ahk. If you use this macro unmodified, when you select one or more entries in Zotero, it will copy them, bring TeXMaker to the forground, and paste your citation at the cursor. Caution: this macro does <em>not</em> check that you are in Zotero when you activate it, nor that TeXMaker is actually running.</p>
+
+<h1 id="find-duplicate-keys-through-integration-with-report-customizerhttpsgithubcomzotpluszotero-report-customizer">Find duplicate keys through integration with <a href="https://github.com/ZotPlus/zotero-report-customizer">Report Customizer</a></h1>
+
+<p>The plugin will generate BibTeX comments to show whether a key conflicts and with which entry. BBT integrates with
+<a href="https://github.com/ZotPlus/zotero-report-customizer">Zotero: Report Customizer</a> to display the BibTeX key plus any
+conflicts between them in the zotero report.</p>
+
+<h1 id="configurable-citekey-generator">Configurable citekey generator</h1>
+
+<p>BBT also implements a new citekey generator for those entries that don’t have one set explicitly; the formatter
+follows the <a href="http://jabref.sourceforge.net/help/LabelPatterns.php">JabRef key formatting syntax</a>, with a twist; you can
+set multiple patterns separated by a vertical bar, of which the first will be applied that yields a non-empty string. If
+all return a empty string, a random key will be generated. Note that in addition to the ‘special’ fields listed JabRef
+also allows all ‘native’ fields as key values; the plugin does the same but allows for <em>Zotero</em> native fields (case
+sensitive!) not Bib(La)TeX native fields. The possible fields are:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th> </th>
+      <th> </th>
+      <th> </th>
+      <th> </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>AbstractNote</td>
+      <td>AccessDate</td>
+      <td>ApplicationNumber</td>
+      <td>Archive</td>
+    </tr>
+    <tr>
+      <td>ArchiveLocation</td>
+      <td>ArtworkMedium</td>
+      <td>ArtworkSize</td>
+      <td>Assignee</td>
+    </tr>
+    <tr>
+      <td>Attachments</td>
+      <td>AudioFileType</td>
+      <td>AudioRecordingFormat</td>
+      <td>BillNumber</td>
+    </tr>
+    <tr>
+      <td>BlogTitle</td>
+      <td>BookTitle</td>
+      <td>CallNumber</td>
+      <td>CaseName</td>
+    </tr>
+    <tr>
+      <td>Code</td>
+      <td>CodeNumber</td>
+      <td>CodePages</td>
+      <td>CodeVolume</td>
+    </tr>
+    <tr>
+      <td>Committee</td>
+      <td>Company</td>
+      <td>ConferenceName</td>
+      <td>Country</td>
+    </tr>
+    <tr>
+      <td>Court</td>
+      <td>Date</td>
+      <td>DateAdded</td>
+      <td>DateDecided</td>
+    </tr>
+    <tr>
+      <td>DateEnacted</td>
+      <td>DateModified</td>
+      <td>DictionaryTitle</td>
+      <td>Distributor</td>
+    </tr>
+    <tr>
+      <td>DocketNumber</td>
+      <td>DocumentNumber</td>
+      <td>DOI</td>
+      <td>Edition</td>
+    </tr>
+    <tr>
+      <td>EncyclopediaTitle</td>
+      <td>EpisodeNumber</td>
+      <td>Extra</td>
+      <td>FilingDate</td>
+    </tr>
+    <tr>
+      <td>FirstPage</td>
+      <td>ForumTitle</td>
+      <td>Genre</td>
+      <td>History</td>
+    </tr>
+    <tr>
+      <td>Institution</td>
+      <td>InterviewMedium</td>
+      <td>ISBN</td>
+      <td>ISSN</td>
+    </tr>
+    <tr>
+      <td>Issue</td>
+      <td>IssueDate</td>
+      <td>IssuingAuthority</td>
+      <td>ItemType</td>
+    </tr>
+    <tr>
+      <td>JournalAbbreviation</td>
+      <td>Label</td>
+      <td>Language</td>
+      <td>LegalStatus</td>
+    </tr>
+    <tr>
+      <td>LegislativeBody</td>
+      <td>LetterType</td>
+      <td>LibraryCatalog</td>
+      <td>ManuscriptType</td>
+    </tr>
+    <tr>
+      <td>MapType</td>
+      <td>Medium</td>
+      <td>MeetingName</td>
+      <td>Month</td>
+    </tr>
+    <tr>
+      <td>NameOfAct</td>
+      <td>Network</td>
+      <td>Notes</td>
+      <td>Number</td>
+    </tr>
+    <tr>
+      <td>NumberOfVolumes</td>
+      <td>NumPages</td>
+      <td>Pages</td>
+      <td>PatentNumber</td>
+    </tr>
+    <tr>
+      <td>Place</td>
+      <td>PostType</td>
+      <td>PresentationType</td>
+      <td>PriorityNumbers</td>
+    </tr>
+    <tr>
+      <td>ProceedingsTitle</td>
+      <td>ProgrammingLanguage</td>
+      <td>ProgramTitle</td>
+      <td>PublicationTitle</td>
+    </tr>
+    <tr>
+      <td>PublicLawNumber</td>
+      <td>Publisher</td>
+      <td>References</td>
+      <td>Related</td>
+    </tr>
+    <tr>
+      <td>Reporter</td>
+      <td>ReporterVolume</td>
+      <td>ReportNumber</td>
+      <td>ReportType</td>
+    </tr>
+    <tr>
+      <td>Rights</td>
+      <td>RunningTime</td>
+      <td>Scale</td>
+      <td>Section</td>
+    </tr>
+    <tr>
+      <td>Series</td>
+      <td>SeriesNumber</td>
+      <td>SeriesTeXt</td>
+      <td>SeriesTitle</td>
+    </tr>
+    <tr>
+      <td>Session</td>
+      <td>ShortTitle</td>
+      <td>Source</td>
+      <td>Studio</td>
+    </tr>
+    <tr>
+      <td>Subject</td>
+      <td>System</td>
+      <td>Tags</td>
+      <td>ThesisType</td>
+    </tr>
+    <tr>
+      <td>Title</td>
+      <td>University</td>
+      <td>Url</td>
+      <td>Version</td>
+    </tr>
+    <tr>
+      <td>VideoRecordingFormat</td>
+      <td>Volume</td>
+      <td>WebsiteTitle</td>
+      <td>WebsiteType</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="advanced-usage">Advanced usage</h2>
+
+<p>BBT adds a few fields, flags and filter functions that JabRef (perhaps wisely) doesn’t. These are:</p>
+
+<h3 id="functions">Functions</h3>
+
+<ul>
+  <li><code>journal</code>: returns the journal <em>abbreviation</em> (I know, counterintuitive, but best mimics JabRef). If you want the
+full journal title, use <code>PublicationTitle</code>. <code>journal</code> returns the same as <code>JournalAbbreviation</code>, if set; if not
+set, and ‘automatic journal abbreviation’ is enabled in the BBT settings, will use the same abbreviation filter Zotero
+uses in the wordprocessor integration. You might want to use the <code>nopunct</code> filter (see below) on this.</li>
+</ul>
+
+<h3 id="flags">Flags</h3>
+
+<ul>
+  <li><code>+initials</code> adds initials to any author name function. Specify using e.g. [auth+initials]</li>
+</ul>
+
+<h3 id="filters">Filters</h3>
+
+<ul>
+  <li><code>nopunct</code>: removes punctuation</li>
+  <li><code>condense</code>: this replaces spaces in the value passed in. You can specify what to replace it with by adding it as a
+parameter, e.g <code>condense,_</code> will replace spaces with underscores. <strong>Parameters should not contain spaces</strong> unless you
+want the spaces in the value passed in to be replaced with those spaces in the parameter</li>
+  <li><code>skipwords</code>: filters out common words like ‘of’, ‘the’, …</li>
+  <li><code>select</code>: selects words from the value passed in. The format is <code>select,start,number</code> (1-based), so <code>select,1,4</code>
+would select the first four words. It is important to note that `select’ works only on values that have the words
+separated by whitespace, so the caveat below applies.</li>
+  <li><code>ascii</code>: removes all non-ascii characters</li>
+  <li><code>fold</code>: tries to replace diacritics with ascii look-alikes.</li>
+  <li><code>capitalize</code>: uppercases the first letter of each word</li>
+</ul>
+
+<p><em>Usage note</em>: the functions <code>skipwords</code>, <code>capitalize</code> and <code>select</code> rely on whitespaces for word handling. The JabRef functions strip
+whitespace and thereby make these filter functions sort of useless. You will in general want to use the fields from the
+table above, which give you the values from Zotero without any changes.</p>
+
+<p>Example: mimicking zotero’s original key generation, but replacing underscores with points (e.g. because LaTeX may choke
+on underscores):</p>
+
+<p>Given authors and titles</p>
+
+<ul>
+  <li>Mercier (2013) The function of reasoning […]</li>
+  <li>de Groot &amp; van Hell (2005) Handbook of Bilingualism […]</li>
+</ul>
+
+<p><code>[author].[year].[Title:skipwords:select,1,1]</code> results in</p>
+
+<ul>
+  <li>“Mercier.2013.function” and</li>
+  <li>“deGroot.2005.Handbook”</li>
+</ul>
+
+<p>Note that when the word from the <code>Title</code> field that ends up at the beginning after the <code>skipwords</code> treatment is a
+lowercase word, it remains just that. You can change that with the <code>capitalize</code> function if so desired.</p>
+
+<h1 id="generation-of-stable-keys-and-syncing">Generation of stable keys, and syncing</h1>
+
+<p>Better BibTeX versions after 0.6.8 generate stable citation keys across your entire library. These stable keys come in
+two flavors:</p>
+
+<ol>
+  <li>‘soft’ keys, which auto-update whenever the relevant data from the reference does, and</li>
+  <li>‘pinned’ or ‘fixed’ keys, which don’t.</li>
+</ol>
+
+<p>The pinned keys show up in the ‘extra’ field of your references, and sync across libraries. You cannot see the soft keys
+(yet; being worked on), and the soft keys <strong>do not sync</strong> (yet; being worked on), but they’re present in a separate
+database so partial exports will know to generate keys not already in use (even if that is a ‘soft’ use), and so these
+soft keys will reliably survive restarts of Zotero.</p>
+
+<p>Quite a bit of trickery is involved in generating these stable keys, and some of this trickery could cause an undue burden
+on the Zotero sync infrastructure. To prevent such strain on the Zotero sync servers, the following restrictions are in
+place:</p>
+
+<ul>
+  <li>By default, BBT only generates soft keys. You can generate a pinned key by right-clicking the reference and choosing
+‘Generate BibTeX key’. You can clear this key either by editing the extra field, or right-clicking the reference and
+selecting ‘clear BibTeX key’.</li>
+  <li>If you want to make sure all your exported BibTeX files have pinned keys (very useful if you have a shared library, or
+you work from multiple workstations), go into the BBT preferences and select ‘on export’. This option will be greyed out
+unless you have Zotero sync off, or, if enabled, have set it to auto-sync. Each pinned key change (or clearing of a
+pinned key) means a change to the reference, and that means the item will be synced if you have that set up. Massive
+amounts of key changes (which can easily happen if you have on-export and you export your full library) could
+overwhelm the Zotero sync service if presented in sudden bulk; automatic syncing ameliorates that problem. I’m working
+on a change so you can make this a per-library setting, and a change that syncs citekeys outside the Zotero servers.</li>
+  <li>If you always want pinned keys, go into the BBT preferences and select ‘on change’.</li>
+</ul>
+
+<p>I am terribly sorry having to do this, but not doing this would risk sync being permanently impossible, as the Zotero
+server will kick you out if a sync takes too long.</p>
+
+      </section>
+      <footer>
+        <p>Project maintained by <a href="https://github.com/ZotPlus">ZotPlus</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://twitter.com/michigangraham">mattgraham</a></small></p>
+      </footer>
+    </div>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+    
+  </body>
+</html>

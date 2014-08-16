@@ -1,0 +1,147 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Zotero-better-bibtex by ZotPlus</title>
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script src="javascripts/main.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+  </head>
+  <body>
+
+      <header>
+        <h1>Zotero-better-bibtex 0.6.10
+</h1>
+        <p></p>
+      </header>
+
+      <div id="banner">
+        <span id="logo"></span>
+
+        <a href="https://github.com/ZotPlus/zotero-better-bibtex" class="button fork"><strong>View On GitHub</strong></a>
+        <div class="downloads">
+          <span>Downloads:</span>
+          <ul>
+            <li><a href="https://github.com/ZotPlus/zotero-better-bibtex/zipball/master" class="button">ZIP</a></li>
+            <li><a href="https://github.com/ZotPlus/zotero-better-bibtex/tarball/master" class="button">TAR</a></li>
+          </ul>
+        </div>
+      </div><!-- end banner -->
+
+    <div class="wrapper">
+      <nav>
+        <ul class="projects">
+          
+            
+            
+          
+            
+            
+          
+            
+            
+          
+            
+            
+          
+            
+            
+              <li><a  href="/better-bibtex/index.html">Home</a></li>
+            
+          
+        </ul>
+        
+        <ul class="pages">
+          
+          
+            
+          
+            
+          
+            
+          
+            
+              <li><a  href="/better-bibtex/index.html">Home</a></li>
+            
+          
+            
+              <li><a class="active" href="/better-bibtex/Customized-Exports.html">Customized Exports</a></li>
+            
+          
+          
+            
+              <li><a  href="/better-bibtex/Citation-Keys.html">Citation Keys</a></li>
+            
+          
+            
+          
+            
+              <li><a  href="/better-bibtex/Pull-Export.html">Pull Export</a></li>
+            
+          
+            
+              <li><a  href="/better-bibtex/Support-Request-Guidelines.html">Support Request Guidelines</a></li>
+            
+          
+            
+          
+        </ul>
+        <ul class="current-page"></ul>
+      </nav>
+      <section>
+        <h3>Customized Exports</h3>
+
+        <p>The Better BibTeX configuration pane can be found under the regular Zotero preferences pane, tab ‘Better Bib(La)TeX’.
+Through the configuration pane of BBT you can customize the BibTeX file that will be exported:</p>
+
+<ul>
+  <li><strong>Unicode conversion</strong>: the default is to retain unicode characters on export for BibLaTeX, and to convert to LaTeX
+commands (where possible) for BibTeX. You can specify whether you want to retain this default, or whether you want BBT
+to always export translating to LaTeX commands, or never to do this translation.</li>
+  <li><strong>Recursive collection export</strong>: when exporting a collection, recursive export will include all child collections.
+Note that this also sets Zotero to display collection contents recursively.</li>
+  <li><strong>Omit fields from export</strong>: Should you so wish, you can prevent fields of your choosing from being exported. In the
+configuration screen, add a comma-separated list of BibTeX fields you do not want to see in your export. The fields
+are case-sensitive, separated by a comma <em>only</em>, no spaces.</li>
+  <li>
+    <table>
+      <tbody>
+        <tr>
+          <td>**[[Configurable citekey generator</td>
+          <td>Citation-Keys]]**</td>
+        </tr>
+      </tbody>
+    </table>
+  </li>
+  <li><strong>Pull export</strong>: You can fetch your library as part of your build, using curl (for example by using the included
+zoterobib.yaml arara rule), or with a BiblaTeX remote statement like
+\addbibresource[location=remote]{http://localhost:23119/better-bibtex/collection?/0/8CV58ZVD.biblatex}.  For Zotero
+standalone this is enabled by default; for Zotero embedded, this enables the embedded webserver.</li>
+</ul>
+
+<p>BBT http export uses the general Zotero HTTP facility; please note that disabling this will disable ALL http
+facilities in zotero – including the non-Firefox plugins provided by Zotero.</p>
+
+<h1 id="add-your-own-biblatex-fields">Add your own BibLaTeX fields</h1>
+
+<p>You can add any field you like by using something like biblatexdata[origdate=1856;origtitle=An Old Title].  You can fix
+the citation key for a reference by adding the text “bibtex: [your citekey]” (sans quotes) anywhere in the “extra” field
+of the reference.</p>
+
+      </section>
+      <footer>
+        <p>Project maintained by <a href="https://github.com/ZotPlus">ZotPlus</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://twitter.com/michigangraham">mattgraham</a></small></p>
+      </footer>
+    </div>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+    
+  </body>
+</html>
