@@ -1,6 +1,7 @@
 ---
 layout: default
 title: Home
+weight: 0
 ---
 # Zotero: Better Bib(La)TeX [![Build Status](https://travis-ci.org/ZotPlus/zotero-better-bibtex.svg?branch=master)](https://travis-ci.org/ZotPlus/zotero-better-bibtex)
 
