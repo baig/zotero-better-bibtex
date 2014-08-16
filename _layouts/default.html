@@ -40,12 +40,12 @@
           {% assign sorted_pages = site.pages | sort: 'weight' %}
           {% for p in sorted_pages %}
             {% if p.weight != nil %}
-              <li>{{p.weight}} <a {% if p.url == page.url %}class="active"{% endif %} href="{{ p.url }}">{{ p.title }}</a></li>
+              <li><a {% if p.url == page.url %}class="active"{% endif %} href="{{ p.url }}">{{ p.title }}</a></li>
             {% endif %}
           {% endfor %}
           {% for p in site.pages %}
             {% if p.weight == nil %}
-              <li>{{p.weight}} <a {% if p.url == page.url %}class="active"{% endif %} href="{{ p.url }}">{{ p.title }}</a></li>
+              <li><a {% if p.url == page.url %}class="active"{% endif %} href="{{ p.url }}">{{ p.title }}</a></li>
             {% endif %}
           {% endfor %}
         </ul>
