@@ -36,15 +36,24 @@
 
     <div class="wrapper">
       <nav>
+        <ul class="projects">
+          {% for p in site.pages %}
+            {% assign filename = p.url | split: '/' | last%}
+            {% if filename == 'index.html' %}
+              <li><a {% if p.url == page.url %}class="active"{% endif %} href="{{ p.url }}">{{ p.title }}</a></li>
+            {% endif %}
+          {% endfor %}
+        </ul>
+        {% assign project = page.url | split: '/' | first | append '/' %}
         <ul class="pages">
           {% assign sorted_pages = site.pages | sort: 'weight' %}
           {% for p in sorted_pages %}
-            {% if p.weight != nil %}
+            {% if p.url contains project and p.weight != nil %}
               <li><a {% if p.url == page.url %}class="active"{% endif %} href="{{ p.url }}">{{ p.title }}</a></li>
             {% endif %}
           {% endfor %}
           {% for p in site.pages %}
-            {% if p.weight == nil %}
+            {% if p.url contains project and p.weight == nil %}
               <li><a {% if p.url == page.url %}class="active"{% endif %} href="{{ p.url }}">{{ p.title }}</a></li>
             {% endif %}
           {% endfor %}
