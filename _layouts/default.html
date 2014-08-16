@@ -38,6 +38,7 @@
       <nav>
         <ul class="pages">
           {% assign sorted_pages = site.pages | sort_by:weight %}
+          {{ sorted_pages }}
           {% for p in sorted_pages %}
             <li><a {% if p.url == page.url %}class="active"{% endif %} href="{{ p.url }}">{{ p.title }}</a></li>
           {% endfor %}
