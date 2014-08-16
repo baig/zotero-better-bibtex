@@ -1,5 +1,5 @@
 permalink: /:categories/:title
 auto: true
 url: http://www.google.com
-name: Zotero: Better BibTeX
+name: "Zotero: Better BibTeX"
 description: Better BibTeX support for Zotero
