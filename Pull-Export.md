@@ -1,3 +1,7 @@
+---
+layout: default
+title: Pull Export
+---
 You can fetch your library as part of your build, using curl (for example by using the included zoterobib.yaml arara
 rule), or with a BiblaTeX remote statement like
 \addbibresource[location=remote]{http://localhost:23119/better-bibtex/collection?/0/8CV58ZVD.biblatex}.  For Zotero

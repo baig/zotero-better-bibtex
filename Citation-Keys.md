@@ -1,3 +1,7 @@
+---
+layout: default
+title: Citation Keys
+---
 BBT offers you control over your citation keys.
 
 # Set your own, fixed citation keys
