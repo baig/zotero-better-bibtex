@@ -1,0 +1,111 @@
+<?xml version="1.0" ?>
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+<?xml-stylesheet href="chrome://zotero/skin/upgrade.css" type="text/css"?>
+<?xml-stylesheet href="chrome://zotero/skin/bibliography.css"?>
+<!DOCTYPE window SYSTEM "chrome://zotero-better-bibtex/locale/zotero-better-bibtex.dtd">
+
+<wizard xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+	title="&zotero.better-bibtex.mdScan.title;" width="700" height="550"
+	id="zotero-mdScan">
+	
+	<script src="include.js"/>
+	<script src="bibliography.js"/>
+	<script src="mdScan.js"/>
+	
+	<wizardpage id="intro-page" label="&zotero.better-bibtex.mdScan.introPage.label;"
+	onpageshow="Zotero_RTFScan.introPageShowing()"
+	onpageadvanced="Zotero_RTFScan.introPageAdvanced()">
+		<vbox>
+			<description width="700">&zotero.better-bibtex.mdScan.introPage.description;</description>
+			<label value="{Smith, 2009}"/>
+			<label value="Smith {2009}"/>
+			<label value="{Smith et al., 2009}"/>
+			<label value="{John Smith, 2009}"/>
+			<label value="{Smith, 2009, 10-14}"/>
+			<label value="{Smith, &quot;Title,&quot; 2009}"/>
+			<label value="{Jones, 2005; Smith, 2009}"/>
+			<description width="700" style="padding-top:1em">&zotero.better-bibtex.mdScan.introPage.description2;</description>
+		</vbox>
+		<groupbox>
+			<caption label="&zotero.better-bibtex.mdScan.inputFile.label;"/>
+			<hbox align="center">
+				<textbox value="&zotero.better-bibtex.file.noneSelected.label;" id="input-path" flex="1" readonly="true"/>
+				<button id="choose-input-file" label="&zotero.better-bibtex.file.choose.label;" onclick="Zotero_RTFScan.chooseInputFile()"/>
+			</hbox>
+		</groupbox>
+		<groupbox>
+			<caption label="&zotero.better-bibtex.mdScan.outputFile.label;"/>
+			<hbox align="center">
+				<textbox value="&zotero.better-bibtex.file.noneSelected.label;" id="output-path" flex="1" readonly="true"/>
+				<button id="choose-output-file" label="&zotero.better-bibtex.file.choose.label;" onclick="Zotero_RTFScan.chooseOutputFile()"/>
+			</hbox>
+		</groupbox>
+	</wizardpage>
+	
+	<wizardpage id="scan-page" label="&zotero.better-bibtex.mdScan.scanPage.label;"
+	onpageshow="Zotero_RTFScan.scanPageShowing()">
+		<description width="700">&zotero.better-bibtex.mdScan.scanPage.description;</description>
+		<progressmeter id="progress-indicator" mode="undetermined" flex="1"/>
+	</wizardpage>
+	
+	<wizardpage id="citations-page" label="&zotero.better-bibtex.mdScan.citationsPage.label;"
+	onpageshow="Zotero_RTFScan.citationsPageShowing()"
+	onpagerewound="return Zotero_RTFScan.citationsPageRewound();">
+		<description width="700">&zotero.better-bibtex.mdScan.citationsPage.description;</description>
+		<tree flex="1" id="tree" hidecolumnpicker="true" onclick="Zotero_RTFScan.treeClick(event)">
+			<treecols>
+				<treecol label="&zotero.better-bibtex.mdScan.citation.label;" id="pdf-col" flex="1" primary="true"/>
+				<splitter class="tree-splitter"/>
+				<treecol label="&zotero.better-bibtex.mdScan.itemName.label;" id="item-col" flex="2"/>
+				<treecol id="action-col" style="width:40px"/>
+			</treecols>
+			<treechildren id="treechildren">
+				<treeitem id="unmapped-citations-item" container="true" open="true" hidden="true">
+					<treerow>
+						<treecell label="&zotero.better-bibtex.mdScan.unmappedCitations.label;"/>
+					</treerow>
+					<treechildren id="unmapped-citations-children"/> 
+				</treeitem>
+				<treeitem id="ambiguous-citations-item" container="true" open="true" hidden="true">
+					<treerow>
+						<treecell label="&zotero.better-bibtex.mdScan.ambiguousCitations.label;"/>
+					</treerow>
+					<treechildren id="ambiguous-citations-children"/>
+				</treeitem>
+				<treeitem id="mapped-citations-item" container="true" open="true" hidden="true">
+					<treerow>
+						<treecell label="&zotero.better-bibtex.mdScan.mappedCitations.label;"/>
+					</treerow>
+					<treechildren id="mapped-citations-children"/>
+				</treeitem>
+			</treechildren>
+		</tree>
+	</wizardpage>
+	
+	<wizardpage id="style-page" label="&zotero.better-bibtex.mdScan.stylePage.label;"
+	onpageadvanced="Zotero_RTFScan.stylePageAdvanced()"
+	onpageshow="Zotero_RTFScan.stylePageShowing()">
+		<groupbox flex="1">
+			<caption label="&zotero.better-bibtex.bibliography.style.label;"/>
+			<listbox id="style-listbox" onselect="Zotero_File_Interface_Bibliography.styleChanged()" flex="1"/>
+		</groupbox>
+		
+		<groupbox>
+			<caption label="&zotero.better-bibtex.integration.prefs.displayAs.label;"/>
+			<radiogroup id="displayAs" orient="horizontal">
+				<radio id="footnotes" label="&zotero.better-bibtex.integration.prefs.footnotes.label;" selected="true"/>
+				<radio id="endnotes" label="&zotero.better-bibtex.integration.prefs.endnotes.label;"/>
+			</radiogroup>
+		</groupbox>
+	</wizardpage>
+	
+	<wizardpage id="format-page" label="&zotero.better-bibtex.mdScan.formatPage.label;"
+	onpageshow="Zotero_RTFScan.formatPageShowing()">
+		<description width="700">&zotero.better-bibtex.mdScan.formatPage.description;</description>
+		<progressmeter id="progress-indicator" mode="undetermined" flex="1"/>
+	</wizardpage>
+	
+	<wizardpage id="complete-page" label="&zotero.better-bibtex.mdScan.completePage.label;">
+		<description width="700">&zotero.better-bibtex.mdScan.completePage.description;</description>
+	</wizardpage>
+</wizard>

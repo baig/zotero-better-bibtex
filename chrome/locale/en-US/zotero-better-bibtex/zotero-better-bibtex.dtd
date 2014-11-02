@@ -33,3 +33,31 @@
 <!ENTITY zotero.better-bibtex.pin-citekeys.manual "No">
 <!ENTITY zotero.better-bibtex.pin-citekeys.on-change "On item change">
 <!ENTITY zotero.better-bibtex.pin-citekeys.on-export "On item export">
+
+<!ENTITY zotero.better-bibtex.bibliography.style.label "">
+<!ENTITY zotero.better-bibtex.file.choose.label "">
+<!ENTITY zotero.better-bibtex.file.noneSelected.label "">
+<!ENTITY zotero.better-bibtex.integration.prefs.displayAs.label "">
+<!ENTITY zotero.better-bibtex.integration.prefs.endnotes.label "">
+<!ENTITY zotero.better-bibtex.integration.prefs.footnotes.label "">
+<!ENTITY zotero.better-bibtex.mdScan "Markdown Scan">
+<!ENTITY zotero.better-bibtex.mdScan.ambiguousCitations.label "">
+<!ENTITY zotero.better-bibtex.mdScan.citation.label "">
+<!ENTITY zotero.better-bibtex.mdScan.citationsPage.description "">
+<!ENTITY zotero.better-bibtex.mdScan.citationsPage.label "">
+<!ENTITY zotero.better-bibtex.mdScan.completePage.description "">
+<!ENTITY zotero.better-bibtex.mdScan.completePage.label "">
+<!ENTITY zotero.better-bibtex.mdScan.formatPage.description "">
+<!ENTITY zotero.better-bibtex.mdScan.formatPage.label "">
+<!ENTITY zotero.better-bibtex.mdScan.inputFile.label "">
+<!ENTITY zotero.better-bibtex.mdScan.introPage.description "">
+<!ENTITY zotero.better-bibtex.mdScan.introPage.description2 "">
+<!ENTITY zotero.better-bibtex.mdScan.introPage.label "">
+<!ENTITY zotero.better-bibtex.mdScan.itemName.label "">
+<!ENTITY zotero.better-bibtex.mdScan.mappedCitations.label "">
+<!ENTITY zotero.better-bibtex.mdScan.outputFile.label "">
+<!ENTITY zotero.better-bibtex.mdScan.scanPage.description "">
+<!ENTITY zotero.better-bibtex.mdScan.scanPage.label "">
+<!ENTITY zotero.better-bibtex.mdScan.stylePage.label "">
+<!ENTITY zotero.better-bibtex.mdScan.title "">
+<!ENTITY zotero.better-bibtex.mdScan.unmappedCitations.label "">
