@@ -20,20 +20,22 @@ Zotero.BetterBibTeX.pref = {}
 
 Zotero.BetterBibTeX.pref.prefs = Components.classes['@mozilla.org/preferences-service;1'].getService(Components.interfaces.nsIPrefService).getBranch('extensions.zotero.translators.better-bibtex.')
 
-Zotero.BetterBibTeX.pref.observer =
+Zotero.BetterBibTeX.pref.observer = {
   register: -> Zotero.BetterBibTeX.pref.prefs.addObserver('', this, false)
   unregister: -> Zotero.BetterBibTeX.pref.prefs.removeObserver('', this)
   observe: (subject, topic, data) ->
     if data == 'citeKeyFormat'
       Zotero.BetterBibTeX.DB.query('delete from keys where citeKeyFormat is not null and citeKeyFormat <> ?', [Zotero.BetterBibTeX.pref.get('citeKeyFormat')])
     return
+}
 
-Zotero.BetterBibTeX.pref.stash = ->
-  @stashed = Object.create(null)
-  keys = @prefs.getChildList('')
-  for key in keys
-    @stashed[key] = @get(key)
-  return @stashed
+Zotero.BetterBibTeX.pref.snapshot = ->
+  stash = Object.create(null)
+  for key in @prefs.getChildList('')
+    stash[key] = @get(key)
+  return stash
+
+Zotero.BetterBibTeX.pref.stash = -> @stashed = @snapshot()
 
 Zotero.BetterBibTeX.pref.restore = ->
   for own key, value of @stashed ? {}
@@ -122,6 +124,26 @@ Zotero.BetterBibTeX.init = ->
 
       return original.apply(this, arguments)
     )(Zotero.ItemTreeView.prototype.getCellText)
+
+  # monkey-patch Zotero.Translate.Base.prototype.translate to capture export data
+  Zotero.Translate.Base.prototype.translate = ((original) ->
+    return (libraryID, saveAttachments) ->
+      if this.translator?[0] && this.type == 'export' && this.path && this._displayOptions?['Keep updated']
+        state = {
+          translator: {
+            id: this.translator[0].translatorID
+            label: this.translator[0].label
+          }
+          options: JSON.parse(JSON.stringify(this._displayOptions)) # Object.create(this._displayOptions) is cheaper but log won't show it
+          path: this.path
+          items: if this._items then (i._id for i in this._items) else null
+          collection: if this._collection then this._collection._id else null
+          preferences: Zotero.BetterBibTeX.pref.snapshot()
+        }
+        Zotero.BetterBibTeX.log(':::capture', state)
+
+      return original.apply(this, arguments)
+    )(Zotero.Translate.Base.prototype.translate)
 
   notifierID = Zotero.Notifier.registerObserver(@itemChanged, ['item'])
   window.addEventListener('unload', ((e) -> Zotero.Notifier.unregisterObserver(notifierID)), false)
