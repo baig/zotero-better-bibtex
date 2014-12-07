@@ -142,6 +142,14 @@ Zotero.BetterBibTeX.init = ->
         }
         Zotero.BetterBibTeX.log(':::capture', state)
 
+        # I don't want 'Keep updated' to be remembered as a default
+        try
+          settings = JSON.parse(Zotero.Prefs.get('export.translatorSettings'))
+          if settings['Keep updated']
+            delete settings['Keep updated']
+            Zotero.Prefs.set('export.translatorSettings', JSON.stringify(settings));
+        catch
+
       return original.apply(this, arguments)
     )(Zotero.Translate.Base.prototype.translate)
 
