@@ -58,8 +58,7 @@ Before do
 end
 
 After do |scenario|
-  #open("#{scenario.title}.debug", 'w'){|f| f.write(DBB.log) } if scenario.source_tag_names.include?('@logcapture')
-  if scenario.failed?
+  if scenario.failed? || scenario.source_tag_names.include?('@logcapture')
     @logcaptures ||= 0
     @logcaptures += 1
     if @logcaptures <= 5

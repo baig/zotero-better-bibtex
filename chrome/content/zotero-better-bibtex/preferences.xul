@@ -10,7 +10,7 @@
             insertafter="zotero-prefpane-advanced"
             label="&zotero.better-bibtex.preferences.prefpane.better-bibtex;"
             image="chrome://zotero-better-bibtex/skin/prefs.png"
-            onpaneload="Zotero.BetterBibTeX.pref.update(document);"
+            onpaneload="Zotero.BetterBibTeX.pref.update();"
             >
       <preferences id="zotero-preferences-cite">
         <preference id="pref-better-bibtex-recursive" name="extensions.zotero.recursiveCollections" type="bool"/>
@@ -33,6 +33,7 @@
           <tab label="&zotero.better-bibtex.prefs.citation;"/>
           <tab label="&zotero.better-bibtex.prefs.import-export;"/>
           <tab label="&zotero.better-bibtex.prefs.journal-abbrev;"/>
+          <tab label="&zotero.better-bibtex.prefs.auto-export;"/>
         </tabs>
 
         <tabpanels>
@@ -46,11 +47,11 @@
                 <rows>
                   <row>
                     <label value="&zotero.better-bibtex.cite.command;"/>
-                    <textbox id="id-better-bibtex-preferences-citeCommand" preference="pref-better-bibtex-citecommand" onchange="Zotero.BetterBibTeX.pref.update(event);" onkeypress="setTimeout(Zotero.BetterBibTeX.pref.update, 1);"/>
+                    <textbox id="id-better-bibtex-preferences-citeCommand" preference="pref-better-bibtex-citecommand" onchange="Zotero.BetterBibTeX.pref.update();" onkeypress="setTimeout(Zotero.BetterBibTeX.pref.update, 1);"/>
                   </row>
                   <row>
                     <label value="&zotero.better-bibtex.cite.format;"/>
-                    <textbox id="id-better-bibtex-preferences-citeKeyFormat" preference="pref-better-bibtex-format" oninput="Zotero.BetterBibTeX.pref.update(event);" onkeypress="setTimeout(Zotero.BetterBibTeX.pref.update, 1);"/>
+                    <textbox id="id-better-bibtex-preferences-citeKeyFormat" preference="pref-better-bibtex-format" oninput="Zotero.BetterBibTeX.pref.update();" onkeypress="setTimeout(Zotero.BetterBibTeX.pref.update, 1);"/>
                   </row>
                   <row>
                     <label value="&zotero.better-bibtex.langid;"/>
@@ -84,7 +85,7 @@
                 <rows>
                   <row>
                     <label value="&zotero.better-bibtex.skipFields;"/>
-                    <textbox id="id-better-bibtex-preferences-skipFields" preference="pref-better-bibtex-skipFields" oninput="Zotero.BetterBibTeX.pref.update(event);" onkeypress="setTimeout(Zotero.BetterBibTeX.pref.update, 1);"/>
+                    <textbox id="id-better-bibtex-preferences-skipFields" preference="pref-better-bibtex-skipFields" oninput="Zotero.BetterBibTeX.pref.update();" onkeypress="setTimeout(Zotero.BetterBibTeX.pref.update, 1);"/>
                   </row>
                   <row>
                     <label value="&zotero.better-bibtex.unicode;"/>
@@ -126,6 +127,13 @@
                 <label>&zotero.better-bibtex.preferences.auto-abbrev.style;</label>
                 <listbox id="better-bibtex-abbrev-style" flex="1" onselect="Zotero.BetterBibTeX.pref.styleChanged()"/>
               </vbox>
+            </vbox>
+          </tabpanel>
+          <tabpanel orient="vertical"><!-- auto export -->
+            <vbox flex="1">
+              <hbox>
+                <listbox id="better-bibtex-export-list" flex="1" onselect="Zotero.BetterBibTeX.pref.exportSelected()"/>
+              </hbox>
             </vbox>
           </tabpanel>
         </tabpanels>

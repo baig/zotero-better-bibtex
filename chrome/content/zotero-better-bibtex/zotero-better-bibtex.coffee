@@ -90,12 +90,24 @@ Zotero.BetterBibTeX.init = ->
                select itemID, libraryID, citekey, case when pinned = 1 then null else ? end from keys2', [@pref.get('citeKeyFormat')])
     @DB.query("insert or replace into _version_ (tablename, version) values ('keys', 4)")
 
+  if version <= 4
+    @DB.query("
+      create table cache (
+        itemid not null,
+        timestamp not null,
+        context not null,
+        citekey not null,
+        ref not null,
+        primary key (itemid, context))
+      ")
+    @DB.query("insert or replace into _version_ (tablename, version) values ('keys', 5)")
+
   @DB.query('delete from keys where citeKeyFormat is not null and citeKeyFormat <> ?', [@pref.get('citeKeyFormat')])
 
-  @keymanager.init()
   Zotero.Translate.Export::Sandbox.BetterBibTeX = {
-    __exposedProps__: {keymanager: 'r'}
-    keymanager: @keymanager
+    __exposedProps__: {cache: 'r', keymanager: 'r'}
+    keymanager: @keymanager.init()
+    cache: @cache.init()
   }
 
   @pref.observer.register()
@@ -138,7 +150,6 @@ Zotero.BetterBibTeX.init = ->
           path: this.path
           items: if this._items then (i._id for i in this._items) else null
           collection: if this._collection then this._collection._id else null
-          preferences: Zotero.BetterBibTeX.pref.snapshot()
         }
         Zotero.BetterBibTeX.log(':::capture', state)
 
@@ -185,13 +196,17 @@ Zotero.BetterBibTeX.itemChanged.notify = (event, type, ids, extraData) ->
         v = extraData[key]
         i = {itemID: key}
         Zotero.BetterBibTeX.clearKey(i, true)
+      if extraData.length > 0
+        Zotero.BetterBibTeX.DB.query("delete from cache where itemid in (#{('' + id for id in extraData).join(',')})")
 
     when 'add', 'modify', 'trash'
       break if ids.length is 0
 
       ids = '(' + ('' + id for id in ids).join(',') + ')'
 
+      Zotero.BetterBibTeX.DB.query("delete from cache where itemid in #{ids}")
       Zotero.BetterBibTeX.DB.query("delete from keys where itemID in #{ids}")
+
       if event != 'trash'
         for item in Zotero.DB.query("#{Zotero.BetterBibTeX.findKeysSQL} and i.itemID in #{ids}") or []
           citekey = Zotero.BetterBibTeX.keymanager.extract({extra: item.extra})
@@ -329,3 +344,4 @@ require('preferences.coffee')
 require('keymanager.coffee')
 require('web-endpoints.coffee')
 require('debug-bridge.coffee')
+require('cache.coffee')

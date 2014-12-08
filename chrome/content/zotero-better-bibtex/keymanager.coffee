@@ -17,6 +17,8 @@ Zotero.BetterBibTeX.keymanager.init = ->
   for own key, value of @__exposedProps__
     @[key].__exposedProps__ = []
 
+  return @
+
 Zotero.BetterBibTeX.keymanager.journalAbbrev = (item) ->
   item = arguments[1] if item._sandboxManager # the sandbox inserts itself in call parameters
 
@@ -94,4 +96,3 @@ Zotero.BetterBibTeX.keymanager.get = (item, pinmode) ->
 
 Zotero.BetterBibTeX.keymanager.keys = ->
   return Zotero.BetterBibTeX.DB.query('select * from keys order by libraryID, itemID')
-

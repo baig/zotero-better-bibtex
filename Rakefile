@@ -90,7 +90,7 @@ ZIPFILES = [
 ]
 
 SOURCES = [
-  #'chrome/content/zotero-better-bibtex/auto-export.coffee',
+  'chrome/content/zotero-better-bibtex/cache.coffee',
   'chrome/content/zotero-better-bibtex/Formatter.pegcoffee',
   'chrome/content/zotero-better-bibtex/include.coffee',
   'chrome/content/zotero-better-bibtex/overlay.xul',
@@ -111,9 +111,9 @@ SOURCES = [
   'resource/translators/mathchar.pegcoffee',
   'resource/translators/Pandoc Citation.coffee',
   'resource/translators/Parser.pegcoffee',
+  'resource/translators/translator.coffee',
   'resource/translators/Unicode2LaTeX.pegcoffee',
   'resource/translators/unicode_translator.coffee',
-  'resource/translators/translator.coffee',
   'resource/translators/Zotero TestCase.coffee',
   'tmp/unicode.xml',
   'update.rdf',

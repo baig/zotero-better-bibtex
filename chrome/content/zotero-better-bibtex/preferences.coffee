@@ -75,3 +75,7 @@ Zotero.BetterBibTeX.pref.update = ->
     listbox.selectedIndex = selectedIndex
     return), 0)
   return
+
+Zotero.BetterBibTeX.pref.exportSelected = ->
+  listbox = document.getElementById('better-bibtex-export-list')
+  return

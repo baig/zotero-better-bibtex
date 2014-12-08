@@ -33,6 +33,7 @@ Zotero.BetterBibTeX.DebugBridge.methods.reset = ->
   catch
 
   Zotero.BetterBibTeX.DB.query('delete from keys')
+  Zotero.BetterBibTeX.DB.query('delete from cache')
   Zotero.Items.emptyTrash()
 
   return true

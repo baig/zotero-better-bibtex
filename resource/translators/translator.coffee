@@ -29,9 +29,16 @@ Translator = new class
 require(':constants:')
 
 Translator.log = (msg...) ->
-  msg = ((if (typeof m) in ['number', 'string'] then ('' + m) else JSON.stringify(m)) for m in msg).join(' ')
-  Zotero.debug("[better-bibtex:#{@label}] #{msg}")
-  return true
+  msg = for m in msg
+    switch
+      when (typeof m) in ['string', 'number'] then '' + m
+      when m instanceof Error and m.name then "#{m.name}: #{m.message} \n(#{m.fileName}, #{m.lineNumber})\n#{m.stack}"
+      when m instanceof Error then "#{e}\n#{e.stack}"
+      else JSON.stringify(m)
+
+  Zotero.debug("[better-bibtex:#{@label}] #{msg.join(' ')}")
+  return
+
 
 Translator.config = ->
   config = Object.create(null)
@@ -49,21 +56,41 @@ Translator.config = ->
 
   return config
 
+Translator.context = ->
+  config = @config()
+
+  context = Object.create(null)
+  context.translator = config.id
+
+  for section in ['preferences', 'options']
+    for own key, value of config[section]
+      context[key] = value
+
+  keys = Object.keys(context)
+  keys.sort()
+  values = (context[k] for k in keys)
+  return JSON.stringify([keys, values])
+
 Translator.initialize = ->
   return if @initialized
   @initialized = true
+
+  @caching = Zotero.getHiddenPref("better-bibtex.caching") && @label.indexOf('Better ') == 0
 
   for own attr, f of @fieldMap or {}
     @BibLaTeXDataFieldMap[f.name] = f if f.name
 
   for own attribute, key of @preferences
-    Translator[attribute] = Zotero.getHiddenPref("better-bibtex.#{key}")
+    # prefer options over preferences, for auto-export
+    Translator[attribute] = Zotero.getOption(key) ? Zotero.getHiddenPref("better-bibtex.#{key}")
   @skipFields = (field.trim() for field in @skipFields.split(','))
   @testmode = Zotero.getHiddenPref('better-bibtex.testmode')
 
   for own attribute, key of @options
     Translator[attribute] = Zotero.getOption(key)
   @exportCollections = if typeof @exportCollections == 'undefined' then true else @exportCollections
+
+  @context = @context() # only calculate once
 
   switch @unicode
     when 'always' then @unicode = true
@@ -120,6 +147,13 @@ Translator.nextItem = ->
 
   @initialize()
 
+  cached = if @caching then Zotero.BetterBibTeX.cache.fetch(@context, item.itemID) else null
+  @log(':::cached', cached)
+  if cached?.citekey
+    @citekeys[item.itemID] = cached.citekey
+    Zotero.write(cached.ref)
+    return @nextItem()
+
   #remove any citekey from extra -- the export doesn't need it
   Zotero.BetterBibTeX.keymanager.extract(item)
 
@@ -162,6 +196,7 @@ JabRef.exportGroup = (collection, level) ->
 
 class Reference
   constructor: (@item) ->
+    Translator.log(':::new reference for', typeof @item, @item)
     @fields = []
     @has = Object.create(null)
     @raw = ((tag.tag for tag in @item.tags when tag.tag == Translator.rawLaTag).length > 0)
@@ -309,4 +344,7 @@ Reference::complete = ->
   ref += (field.bibtex for field in @fields).join(',\n')
   ref += '\n}\n\n'
   Zotero.write(ref)
+
+  Zotero.BetterBibTeX.cache.store(Translator.context, @item.itemID, @item.__citekey__, ref) if Translator.caching
+
   return
