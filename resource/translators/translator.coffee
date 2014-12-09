@@ -27,6 +27,7 @@ Translator = new class
     @BibLaTeXDataFieldMap = Object.create(null)
 
 require(':constants:')
+require('json-stable.coffee')
 
 Translator.log = (msg...) ->
   msg = for m in msg
@@ -66,10 +67,7 @@ Translator.context = ->
     for own key, value of config[section]
       context[key] = value
 
-  keys = Object.keys(context)
-  keys.sort()
-  values = (context[k] for k in keys)
-  return JSON.stringify([keys, values])
+  return BBTjsonify(context)
 
 Translator.initialize = ->
   return if @initialized
@@ -148,10 +146,10 @@ Translator.nextItem = ->
   @initialize()
 
   cached = if @caching then Zotero.BetterBibTeX.cache.fetch(@context, item.itemID) else null
-  @log(':::cached', cached)
+  @log(':::cache hit?', cached?.citekey)
   if cached?.citekey
     @citekeys[item.itemID] = cached.citekey
-    Zotero.write(cached.ref)
+    Zotero.write(cached.entry)
     return @nextItem()
 
   #remove any citekey from extra -- the export doesn't need it
@@ -340,11 +338,12 @@ Reference::complete = ->
       if _a > _b then return 1
       return 0) )
 
-  ref = "@#{@itemtype}{#{@item.__citekey__},\n"
-  ref += (field.bibtex for field in @fields).join(',\n')
-  ref += '\n}\n\n'
-  Zotero.write(ref)
+  entry = "@#{@itemtype}{#{@item.__citekey__},\n"
+  entry += (field.bibtex for field in @fields).join(',\n')
+  entry += '\n}\n\n'
+  Zotero.write(entry)
 
-  Zotero.BetterBibTeX.cache.store(Translator.context, @item.itemID, @item.__citekey__, ref) if Translator.caching
+  @log(':::ref stores', entry)
+  Zotero.BetterBibTeX.cache.store(Translator.context, @item.itemID, @item.__citekey__, entry) if Translator.caching
 
   return

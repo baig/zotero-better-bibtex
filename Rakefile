@@ -55,9 +55,10 @@ def expand(file, options={})
       end
     else
       #puts "including #{tbi.inspect}"
-      tbi = File.join(File.dirname(file.path), tbi)
-      dependencies << tbi
-      result = File.file?(tbi) || !options[:collect] ? expand(open(tbi), options) : ''
+      i = [File.join(File.dirname(file.path), tbi), File.join('include', tbi)].detect{|f| File.file?(f) }
+      throw "#{tbi} not found in #{file.path}" unless i
+      dependencies << i
+      result = File.file?(i) || !options[:collect] ? expand(open(i), options) : ''
       if result.is_a?(Array)
         dependencies << result[1]
         result = result[0]
@@ -90,6 +91,7 @@ ZIPFILES = [
 ]
 
 SOURCES = [
+  'include/json-stable.coffee',
   'chrome/content/zotero-better-bibtex/cache.coffee',
   'chrome/content/zotero-better-bibtex/Formatter.pegcoffee',
   'chrome/content/zotero-better-bibtex/include.coffee',

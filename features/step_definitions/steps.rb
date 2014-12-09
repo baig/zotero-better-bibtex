@@ -67,6 +67,8 @@ After do |scenario|
     end
   end
 
+  open("#{scenario.title}.cache", 'w'){|f| f.write(BBT.cache.to_yaml)} if scenario.source_tag_names.include?('@dumpcache')
+
   BBT.exportToFile('Zotero TestCase', "#{scenario.title}.json") if scenario.source_tag_names.include?('@librarydump')
 end
 
@@ -251,4 +253,8 @@ end
 Then /^I generate a new citation key$/ do
   expect(@selected).not_to be(nil)
   BBT.pinCiteKey(@selected)
+end
+
+Then /^dump the cache to '([^']+)'$/ do |filename|
+  open(filename, 'w'){|f| f.write(BBT.cache)}
 end

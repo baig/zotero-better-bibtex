@@ -97,7 +97,7 @@ Zotero.BetterBibTeX.init = ->
         timestamp not null,
         context not null,
         citekey not null,
-        ref not null,
+        entry not null,
         primary key (itemid, context))
       ")
     @DB.query("insert or replace into _version_ (tablename, version) values ('keys', 5)")

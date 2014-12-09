@@ -1,10 +1,11 @@
 @export
 Feature: Export
 
-@e1 @logcapture
-Scenario: Better BibLaTeX Export 1
+@e1 @dumpcache
+Scenario: Better BibLaTeX Export 1 and test cache
   When I import 1 reference from 'export/Better BibLaTeX.001.json'
   Then a library export using 'Better BibLaTeX' should match 'export/Better BibLaTeX.001.bib'
+   And a library export using 'Better BibLaTeX' should match 'export/Better BibLaTeX.001.bib'
 
 @pandoc
 Scenario: Pandoc Citation Export

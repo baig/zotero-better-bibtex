@@ -32,6 +32,12 @@ Zotero.BetterBibTeX.cache.init = ->
   for own key, value of @__exposedProps__
     @[key].__exposedProps__ = []
 
+  @stats = {
+    hits: 0
+    misses: 0
+    stores: 0
+  }
+
   return @
 
 Zotero.BetterBibTeX.cache.fetch = (context, itemid) ->
@@ -40,14 +46,23 @@ Zotero.BetterBibTeX.cache.fetch = (context, itemid) ->
     itemid = arguments[2]
 
   Zotero.BetterBibTeX.DB.query("update cache set timestamp = datetime('now') where context = ? and itemid = ?", [context, itemid])
-  return Zotero.BetterBibTeX.DB.rowQuery('select timestamp, ref from cache where context = ? and itemid = ?', [context, itemid])
+  for cached in Zotero.BetterBibTeX.DB.query('select citekey, entry from cache where context = ? and itemid = ?', [context, itemid])
+    cached = {citekey: cached.citekey, entry: cached.entry}
+    throw("Malformed cache entry! #{cached}") unless cached.citekey && cached.entry
+    @stats.hits += 1
+    Zotero.BetterBibTeX.log('::: found cache entry', cached)
+    return cached
+  @stats.misses += 1
+  return null
 
-Zotero.BetterBibTeX.cache.store = (context, itemid, citekey, ref) ->
+Zotero.BetterBibTeX.cache.store = (context, itemid, citekey, entry) ->
   if context._sandboxManager
     context = arguments[1]
     itemid = arguments[2]
     citekey = arguments[3]
-    ref = arguments[4]
+    entry = arguments[4]
 
-  Zotero.BetterBibTeX.DB.query("insert or replace into cache (context, itemid, citekey, ref, timestamp) values (?, ?, ?, ?, datetime('now'))", [context, itemid, citekey, ref])
+  @stats.stores += 1
+  Zotero.BetterBibTeX.log('::: caching entry', [context, itemid, citekey, entry])
+  Zotero.BetterBibTeX.DB.query("insert or replace into cache (context, itemid, citekey, entry, timestamp) values (?, ?, ?, ?, datetime('now'))", [context, itemid, citekey, entry])
   return null
