@@ -166,7 +166,7 @@ Scenario: Journal abbreviations exported in bibtex (81)
    And I import 1 reference from 'export/Journal abbreviations exported in bibtex (81).json'
   Then a library export using 'Better BibTeX' should match 'export/Journal abbreviations exported in bibtex (81).bib'
 
-@85
+@failing @failing-1 @85
 Scenario: Square brackets in Publication field (85), and non-pinned keys must change when the pattern does
   When I import 1 reference with 1 attachment from 'export/Square brackets in Publication field (85).json'
   Then a library export using 'Better BibTeX' should match 'export/Square brackets in Publication field (85).bib'
@@ -222,7 +222,7 @@ Scenario: Math parts in title #113
   #Then export the library using 'Better BibLaTeX' to '/tmp/bib.bib'
   Then a library export using 'Better BibLaTeX' should match 'export/Math parts in title #113.bib'
 
-@failing @failing-1 @117
+@117
 Scenario: Bibtex key regenerating issue when trashing items #117
   When I import 1 reference from 'export/Bibtex key regenerating issue when trashing items #117.json'
   And I select the first item where publicationTitle = 'Genetics'

@@ -63,7 +63,7 @@ doImport = ->
 doExport = ->
   Translator.initialize()
   data = {
-    config: Translator.config()
+    config: Translator.config
     collections: Translator.collections()
     items: []
   }

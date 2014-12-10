@@ -43,6 +43,7 @@ unless $headless
   BBT.init
 
   Dir['*.debug'].each{|d| File.unlink(d) }
+  Dir['*.cache'].each{|d| File.unlink(d) }
   Dir['*.log'].each{|d| File.unlink(d) unless File.basename(d) == 'cucumber.log' }
 end
 at_exit do
@@ -67,7 +68,7 @@ After do |scenario|
     end
   end
 
-  open("#{scenario.title}.cache", 'w'){|f| f.write(BBT.cache.to_yaml)} if scenario.source_tag_names.include?('@dumpcache')
+  open("#{scenario.title}.cache", 'w'){|f| f.write(BBT.cache.to_yaml)} if scenario.failed? || scenario.source_tag_names.include?('@dumpcache')
 
   BBT.exportToFile('Zotero TestCase', "#{scenario.title}.json") if scenario.source_tag_names.include?('@librarydump')
 end

@@ -2,6 +2,7 @@ Components.utils.import('resource://gre/modules/Services.jsm')
 Components.utils.import('resource://gre/modules/AddonManager.jsm')
 
 require('Formatter.js')
+require('bbt-common.coffee')
 
 Zotero.BetterBibTeX = {}
 
@@ -141,17 +142,14 @@ Zotero.BetterBibTeX.init = ->
   Zotero.Translate.Base.prototype.translate = ((original) ->
     return (libraryID, saveAttachments) ->
       if this.translator?[0] && this.type == 'export' && this.path && this._displayOptions?['Keep updated']
-        state = {
-          translator: {
-            id: this.translator[0].translatorID
-            label: this.translator[0].label
-          }
-          options: JSON.parse(JSON.stringify(this._displayOptions)) # Object.create(this._displayOptions) is cheaper but log won't show it
-          path: this.path
-          items: if this._items then (i._id for i in this._items) else null
-          collection: if this._collection then this._collection._id else null
+        target = this.path
+        collection: this._collection?._id
+        config = {
+          translator: this.translator[0].translatorID
+          options: this._displayOptions
+          preferences: Zotero.BetterBibTeX.pref.snapshot()
         }
-        Zotero.BetterBibTeX.log(':::capture', state)
+        context = BBTContext(config)
 
         # I don't want 'Keep updated' to be remembered as a default
         try

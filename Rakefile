@@ -91,7 +91,7 @@ ZIPFILES = [
 ]
 
 SOURCES = [
-  'include/json-stable.coffee',
+  'include/bbt-common.coffee',
   'chrome/content/zotero-better-bibtex/cache.coffee',
   'chrome/content/zotero-better-bibtex/Formatter.pegcoffee',
   'chrome/content/zotero-better-bibtex/include.coffee',

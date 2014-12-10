@@ -1,33 +1,15 @@
+require('bbt-common.coffee')
+
 Translator = new class
   constructor: ->
     @citekeys = Object.create(null)
     @attachmentCounter = 0
     @rawLaTag = '#LaTeX'
-    @preferences = {
-      pattern: 'citeKeyFormat'
-      skipFields: 'skipfields'
-      usePrefix: 'useprefix'
-      braceAll: 'brace-all'
-      fancyURLs: 'fancyURLs'
-      langid: 'langid'
-      attachmentRelativePath: 'attachmentRelativePath'
-      autoAbbrev: 'auto-abbrev'
-      autoAbbrevStyle: 'auto-abbrev.style'
-      unicode: 'unicode'
-      pinKeys: 'pin-citekeys'
-      rawImport: 'raw-imports'
-    }
-    @options = {
-      useJournalAbbreviation: 'useJournalAbbreviation'
-      exportCharset: 'exportCharset'
-      exportFileData: 'exportFileData'
-      exportNotes: 'exportNotes'
-      exportCollections: 'Export Collections'
-    }
+
+    { preferences: @preferences, options: @options } = BBTConfig()
     @BibLaTeXDataFieldMap = Object.create(null)
 
 require(':constants:')
-require('json-stable.coffee')
 
 Translator.log = (msg...) ->
   msg = for m in msg
@@ -40,34 +22,9 @@ Translator.log = (msg...) ->
   Zotero.debug("[better-bibtex:#{@label}] #{msg.join(' ')}")
   return
 
-
 Translator.config = ->
-  config = Object.create(null)
-  config.id = @id
-  config.label = @label
-  config.release = @release
-  config.preferences = Object.create(null)
-  config.options = Object.create(null)
-
-  for own attribute, key of @preferences
-    config.preferences[key] = Translator[attribute]
-
-  for own attribute, key of @options
-    config.options[key] = Translator[attribute]
 
   return config
-
-Translator.context = ->
-  config = @config()
-
-  context = Object.create(null)
-  context.translator = config.id
-
-  for section in ['preferences', 'options']
-    for own key, value of config[section]
-      context[key] = value
-
-  return BBTjsonify(context)
 
 Translator.initialize = ->
   return if @initialized
@@ -88,14 +45,28 @@ Translator.initialize = ->
     Translator[attribute] = Zotero.getOption(key)
   @exportCollections = if typeof @exportCollections == 'undefined' then true else @exportCollections
 
-  @context = @context() # only calculate once
+  @config = Object.create(null)
+  @config.id = @id
+  @config.label = @label
+  @config.release = @release
+  @config.preferences = Object.create(null)
+  @config.options = Object.create(null)
+
+  for own attribute, key of @preferences
+    @config.preferences[key] = Translator[attribute]
+
+  for own attribute, key of @options
+    @config.options[key] = Translator[attribute]
+
+  @context = BBTContext(@config)
+  @log(":::cache context = #{@context}")
 
   switch @unicode
     when 'always' then @unicode = true
     when 'never'  then @unicode = false
     else @unicode = @unicode_default or (@exportCharset and @exportCharset.toLowerCase() == 'utf-8')
 
-  @log("Translator: #{JSON.stringify(@config())}")
+  @log("Translator: #{JSON.stringify(@config)}")
 
   if @typeMap
     typeMap = @typeMap
