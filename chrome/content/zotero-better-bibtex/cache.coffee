@@ -22,6 +22,12 @@ Zotero.BetterBibTeX.auto.add = (state) ->
   }
   return
 
+Zotero.BetterBibTeX.auto.recursive
+  try
+    return if Zotero.Prefs.get('recursiveCollections') then 'true' else 'false'
+  catch
+  return 'undefined'
+
 Zotero.BetterBibTeX.cache = {}
 
 Zotero.BetterBibTeX.cache.init = ->
@@ -45,7 +51,6 @@ Zotero.BetterBibTeX.cache.fetch = (context, itemid) ->
     context = arguments[1]
     itemid = arguments[2]
 
-  Zotero.BetterBibTeX.DB.query("update cache set timestamp = datetime('now') where context = ? and itemid = ?", [context, itemid])
   for cached in Zotero.BetterBibTeX.DB.query('select citekey, entry from cache where context = ? and itemid = ?', [context, itemid])
     cached = {citekey: cached.citekey, entry: cached.entry}
     throw("Malformed cache entry! #{cached}") unless cached.citekey && cached.entry
@@ -64,5 +69,5 @@ Zotero.BetterBibTeX.cache.store = (context, itemid, citekey, entry) ->
 
   @stats.stores += 1
   Zotero.BetterBibTeX.log('::: caching entry', [context, itemid, citekey, entry])
-  Zotero.BetterBibTeX.DB.query("insert or replace into cache (context, itemid, citekey, entry, timestamp) values (?, ?, ?, ?, datetime('now'))", [context, itemid, citekey, entry])
+  Zotero.BetterBibTeX.DB.query("insert or replace into cache (context, itemid, citekey, entry) values (?, ?, ?, ?)", [context, itemid, citekey, entry])
   return null
