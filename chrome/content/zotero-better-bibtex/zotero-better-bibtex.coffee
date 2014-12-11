@@ -143,7 +143,10 @@ Zotero.BetterBibTeX.init = ->
     return (row, column) ->
       if column.id == 'zotero-items-column-extra' && Zotero.BetterBibTeX.pref.get('show-citekey')
         item = this._getItemAtRow(row)
-        return Zotero.BetterBibTeX.keymanager.get({itemID: item.id, libraryID: item.libraryID})
+        if item?.ref?.isAttachment() || item?.ref?.isNote()
+          return ''
+        else
+          return Zotero.BetterBibTeX.keymanager.get({itemID: item.id, libraryID: item.libraryID})
 
       return original.apply(this, arguments)
     )(Zotero.ItemTreeView.prototype.getCellText)
