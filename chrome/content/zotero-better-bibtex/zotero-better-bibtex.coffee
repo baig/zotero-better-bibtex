@@ -26,6 +26,7 @@ Zotero.BetterBibTeX.pref.observer = {
   unregister: -> Zotero.BetterBibTeX.pref.prefs.removeObserver('', this)
   observe: (subject, topic, data) ->
     if data == 'citeKeyFormat'
+      Zotero.BetterBibTeX.keymanager.reset()
       Zotero.BetterBibTeX.DB.query('delete from keys where citeKeyFormat is not null and citeKeyFormat <> ?', [Zotero.BetterBibTeX.pref.get('citeKeyFormat')])
     return
 }
@@ -113,6 +114,7 @@ Zotero.BetterBibTeX.init = ->
       ")
     @DB.query("insert or replace into _version_ (tablename, version) values ('keys', 5)")
 
+  Zotero.BetterBibTeX.keymanager.reset()
   @DB.query('delete from keys where citeKeyFormat is not null and citeKeyFormat <> ?', [@pref.get('citeKeyFormat')])
 
   Zotero.Translate.Export::Sandbox.BetterBibTeX = {
@@ -124,10 +126,11 @@ Zotero.BetterBibTeX.init = ->
   @pref.observer.register()
   @pref.ZoteroObserver.register()
 
-  for endpoint in @endpoints
-    url = "/better-bibtex/#{endpoint}"
+  for own name, endpoint of @endpoints
+    url = "/better-bibtex/#{name}"
     ep = Zotero.Server.Endpoints[url] = ->
-    ep.prototype = @endpoints[endpoint]
+    ep.prototype = endpoint
+    @log("Registered #{url}")
 
   if @pref.get('scan-citekeys')
     for row in Zotero.DB.query(@findKeysSQL) or []
@@ -230,7 +233,11 @@ Zotero.BetterBibTeX.itemChanged.notify = (event, type, ids, extraData) ->
 
       ids = '(' + ('' + id for id in ids).join(',') + ')'
 
+<<<<<<< HEAD
       Zotero.BetterBibTeX.DB.query("delete from cache where itemid in #{ids}")
+=======
+      Zotero.BetterBibTeX.keymanager.reset()
+>>>>>>> master
       Zotero.BetterBibTeX.DB.query("delete from keys where itemID in #{ids}")
 
       if event != 'trash'
@@ -251,6 +258,7 @@ Zotero.BetterBibTeX.clearKey = (item, onlyCache) ->
     if citekey
       item.setField('extra', _item.extra)
       item.save()
+  Zotero.BetterBibTeX.keymanager.reset()
   @DB.query('delete from keys where itemID = ?', [item.itemID])
   return
 
@@ -272,7 +280,8 @@ Zotero.BetterBibTeX.translate = (translator, items, displayOptions) ->
   throw 'null translator' unless translator
 
   translation = new Zotero.Translate.Export
-  translation.setItems(items) if items
+  translation.setItems(items.items) if items?.items
+  translation.setCollection(items.collection) if items?.collection
   translation.setTranslator(translator)
   translation.setDisplayOptions(displayOptions)
 
