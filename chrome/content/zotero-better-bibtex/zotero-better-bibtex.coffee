@@ -233,11 +233,7 @@ Zotero.BetterBibTeX.itemChanged.notify = (event, type, ids, extraData) ->
 
       ids = '(' + ('' + id for id in ids).join(',') + ')'
 
-<<<<<<< HEAD
-      Zotero.BetterBibTeX.DB.query("delete from cache where itemid in #{ids}")
-=======
       Zotero.BetterBibTeX.keymanager.reset()
->>>>>>> master
       Zotero.BetterBibTeX.DB.query("delete from keys where itemID in #{ids}")
 
       if event != 'trash'
