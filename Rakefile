@@ -93,7 +93,6 @@ ZIPFILES = [
 ]
 
 SOURCES = [
-<<<<<<< HEAD
   'include/bbt-common.coffee',
   'chrome/content/zotero-better-bibtex/cache.coffee',
   "#{NODEBIN}/coffee",
