@@ -35,7 +35,7 @@ Zotero.BetterBibTeX.pref.ZoteroObserver = {
   unregister: -> Zotero.Prefs.prefBranch.removeObserver('', this)
   observe: (subject, topic, data) ->
     if data == 'recursiveCollections'
-      # trigger all auto exports
+      Zotero.BetterBibTeX.log('trigger all auto exports')
     return
 }
 
@@ -122,6 +122,7 @@ Zotero.BetterBibTeX.init = ->
   }
 
   @pref.observer.register()
+  @pref.ZoteroObserver.register()
 
   for endpoint in @endpoints
     url = "/better-bibtex/#{endpoint}"

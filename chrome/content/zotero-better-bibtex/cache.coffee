@@ -22,7 +22,7 @@ Zotero.BetterBibTeX.auto.add = (state) ->
   }
   return
 
-Zotero.BetterBibTeX.auto.recursive
+Zotero.BetterBibTeX.auto.recursive = ->
   try
     return if Zotero.Prefs.get('recursiveCollections') then 'true' else 'false'
   catch
