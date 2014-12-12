@@ -17,13 +17,15 @@ require 'open3'
 require 'yaml'
 require 'rake/loaders/makefile'
 
+NODEBIN="node_modules/.bin"
+
 LINTED=[]
 def expand(file, options={})
   dependencies = []
 
   #puts "expanding #{file.path.gsub(/^\.\//, '').inspect}"
   if File.extname(file.path) == '.coffee' && !options[:collect] && !LINTED.include?(file.path)
-    sh "coffeelint #{file.path.shellescape}"
+    sh "#{NODEBIN}/coffeelint #{file.path.shellescape}"
     LINTED << file.path
   end
 
@@ -91,8 +93,12 @@ ZIPFILES = [
 ]
 
 SOURCES = [
+<<<<<<< HEAD
   'include/bbt-common.coffee',
   'chrome/content/zotero-better-bibtex/cache.coffee',
+  "#{NODEBIN}/coffee",
+  "#{NODEBIN}/coffeelint",
+  "#{NODEBIN}/pegjs",
   'chrome/content/zotero-better-bibtex/Formatter.pegcoffee',
   'chrome/content/zotero-better-bibtex/include.coffee',
   'chrome/content/zotero-better-bibtex/overlay.xul',
@@ -135,7 +141,7 @@ rule '.js' => '.pegcoffee' do |t|
   name = "tmp/#{File.basename(t.name)}"
   source = "tmp/#{File.basename(t.source)}"
   open(source, 'w'){|f| f.write(expand(open(t.source))) }
-  sh "pegjs --plugin pegjs-coffee-plugin -e BetterBibTeX#{File.basename(t.source, File.extname(t.source))} #{source} #{name}"
+  sh "#{NODEBIN}/pegjs --plugin pegjs-coffee-plugin -e BetterBibTeX#{File.basename(t.source, File.extname(t.source))} #{source} #{name}"
   FileUtils.mv(name, t.name)
 end
 
@@ -151,7 +157,7 @@ rule '.js' => '.coffee' do |t|
   tmp = "tmp/#{File.basename(t.source)}"
   open(tmp, 'w'){|f| f.write(expand(open(t.source), header: header)) }
   puts "Compiling #{t.source}"
-  output, status = Open3.capture2e("coffee -mbpc #{tmp.shellescape}")
+  output, status = Open3.capture2e("#{NODEBIN}/coffee -mbpc #{tmp.shellescape}")
   raise output if status.exitstatus != 0
 
   # include javascript generated from pegjs
@@ -438,5 +444,3 @@ file '.depends.mf' => SOURCES do |t|
   }
 end
 import '.depends.mf'
-
-
