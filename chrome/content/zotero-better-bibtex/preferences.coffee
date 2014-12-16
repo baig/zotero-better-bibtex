@@ -85,6 +85,7 @@ Zotero.BetterBibTeX.pref.update = ->
       itemNode.setAttribute('value', exp)
       itemNode.setAttribute('label', exp)
       itemNode.setAttribute('class', 'export-state-running')
+      #itemNode.setAttribute('style', 'padding-left: 20px; background:url("chrome://zotero-better-bibtex/skin/ic_sync_24px.svg") center left no-repeat;')
       exportlist.appendChild(itemNode)
   return
 

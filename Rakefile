@@ -81,8 +81,6 @@ ZIPFILES = [
   'chrome/content/zotero-better-bibtex/zotero-better-bibtex.js',
   'chrome/locale/en-US/zotero-better-bibtex/zotero-better-bibtex.dtd',
   'chrome/locale/en-US/zotero-better-bibtex/zotero-better-bibtex.properties',
-  'chrome/skin/default/zotero-better-bibtex/overlay.css',
-  'chrome/skin/default/zotero-better-bibtex/prefs.png',
   'defaults/preferences/defaults.js',
   'install.rdf',
   'resource/translators/Better BibLaTeX.js',
@@ -91,7 +89,7 @@ ZIPFILES = [
   'resource/translators/Pandoc Citation.js',
   'resource/translators/Zotero TestCase.js',
   'resource/translators/BibTeXAuxScanner.js',
-]
+] + Dir['chrome/skin/**/*.*']
 
 SOURCES = [
   'chrome/content/zotero-better-bibtex/cache.coffee',
@@ -104,8 +102,6 @@ SOURCES = [
   'chrome/locale/en-US/zotero-better-bibtex/zotero-better-bibtex.dtd',
   'chrome/locale/en-US/zotero-better-bibtex/zotero-better-bibtex.properties',
   'chrome.manifest',
-  'chrome/skin/default/zotero-better-bibtex/overlay.css',
-  'chrome/skin/default/zotero-better-bibtex/prefs.png',
   'defaults/preferences/defaults.coffee',
   'include/bbt-common.coffee',
   'install.rdf',
@@ -126,7 +122,7 @@ SOURCES = [
   'resource/translators/unicode.xml',
   'resource/translators/Zotero TestCase.coffee',
   'update.rdf',
-]
+] + Dir['chrome/skin/**/*.*']
 
 FileUtils.mkdir_p 'tmp'
 
