@@ -141,6 +141,58 @@
             <vbox flex="1">
               <hbox>
                 <listbox id="better-bibtex-export-list" flex="1" onselect="Zotero.BetterBibTeX.pref.exportSelected()"/>
+                <groupbox>
+                  <caption label="&zotero.better-bibtex.preferences.auto-export.config;"/>
+                  <grid>
+                    <columns>
+                      <column/>
+                      <column flex="1"/>
+                    </columns>
+                    <rows>
+                      <row>
+                        <label value="&zotero.better-bibtex.auto-export.collection;"/>
+                        <textbox id="id-better-bibtex-preferences-auto-export-collection" disabled="true"/>
+                      </row>
+                      <row>
+                        <label value="&zotero.better-bibtex.auto-export.target;"/>
+                        <textbox id="id-better-bibtex-preferences-auto-export-target" disabled="true"/>
+                      </row>
+                      <row>
+                        <label value="&zotero.better-bibtex.auto-export.translator;"/>
+                        <textbox id="id-better-bibtex-preferences-auto-export-translator" disabled="true"/>
+                      </row>
+                      <row>
+                        <label value="&zotero.better-bibtex.cite.format;"/>
+                        <textbox id="id-better-bibtex-preferences-auto-export-keyformat" disabled="true"/>
+                      </row>
+                      <row>
+                        <label value="&zotero.better-bibtex.skipFields;"/>
+                        <textbox id="id-better-bibtex-preferences-auto-export-skipFields" disabled="true"/>
+                      </row>
+                      <row>
+                        <checkbox id="id-better-bibtex-preferences-auto-export-preserveCaps" label="&zotero.better-bibtex.brace-all;" disabled="true"/>
+                      </row>
+                      <row>
+                        <checkbox id="id-better-bibtex-preferences-auto-export-auto-abbrev" label="&zotero.better-bibtex.preferences.auto-abbrev;" disabled="true"/>
+                      </row>
+                      <row>
+                        <label value="&zotero.better-bibtex.preferences.auto-abbrev.style;"/>
+                        <textbox id="id-better-bibtex-preferences-auto-export-auto-abbrev-style" disabled="true"/>
+                      </row>
+                      <row>
+                        <label value="&zotero.better-bibtex.unicode;"/>
+                        <textbox id="id-better-bibtex-preferences-auto-export-unicode" disabled="true"/>
+                      </row>
+                      <row>
+                        <label value="&zotero.better-bibtex.auto-export.charset;"/>
+                        <textbox id="id-better-bibtex-preferences-auto-export-charset" disabled="true"/>
+                      </row>
+                      <row>
+                        <checkbox id="id-better-bibtex-preferences-auto-export-notes" label="&zotero.better-bibtex.auto-export.notes;" disabled="true"/>
+                      </row>
+                    </rows>
+                  </grid>
+                </groupbox>
               </hbox>
             </vbox>
           </tabpanel>

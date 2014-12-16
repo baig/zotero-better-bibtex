@@ -45,3 +45,10 @@
 <!ENTITY zotero.better-bibtex.pin-citekeys.key-conflict-policy "On conflict, non-pinned key should be">
 <!ENTITY zotero.better-bibtex.pin-citekeys.key-conflict-policy.change "changed (causes key changes)">
 <!ENTITY zotero.better-bibtex.pin-citekeys.key-conflict-policy.keep "kept (causes key duplicates)">
+
+<!ENTITY zotero.better-bibtex.preferences.auto-export.config "Export Configuration">
+<!ENTITY zotero.better-bibtex.auto-export.charset "Character encoding">
+<!ENTITY zotero.better-bibtex.auto-export.notes "Notes">
+<!ENTITY zotero.better-bibtex.auto-export.collection "Collection">
+<!ENTITY zotero.better-bibtex.auto-export.target "Output file">
+<!ENTITY zotero.better-bibtex.auto-export.translator "Translator">
