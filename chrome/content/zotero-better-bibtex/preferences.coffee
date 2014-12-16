@@ -87,6 +87,10 @@ Zotero.BetterBibTeX.pref.update = ->
       itemNode.setAttribute('class', 'export-state-running')
       #itemNode.setAttribute('style', 'padding-left: 20px; background:url("chrome://zotero-better-bibtex/skin/ic_sync_24px.svg") center left no-repeat;')
       exportlist.appendChild(itemNode)
+
+  ca = document.getElementById('id-better-bibtex-preferences-cache-activity')
+  ca.value = "+#{Zotero.BetterBibTeX.cache.hits || 0}/-#{Zotero.BetterBibTeX.cache.misses || 0}"
+
   return
 
 Zotero.BetterBibTeX.pref.exportSelected = ->

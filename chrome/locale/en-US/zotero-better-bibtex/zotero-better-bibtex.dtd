@@ -52,3 +52,5 @@
 <!ENTITY zotero.better-bibtex.auto-export.collection "Collection">
 <!ENTITY zotero.better-bibtex.auto-export.target "Output file">
 <!ENTITY zotero.better-bibtex.auto-export.translator "Translator">
+
+<!ENTITY zotero.better-bibtex.caching "Cache activity">
