@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<?xml-stylesheet href="chrome://zotero-better-bibtex/skin/overlay.css" type="text/css"?>
+<?xml-stylesheet href="chrome://zotero-better-bibtex/skin/preferences.css" type="text/css"?>
 <!DOCTYPE window SYSTEM "chrome://zotero-better-bibtex/locale/zotero-better-bibtex.dtd">
 
 <overlay id="zotero-better-bibtex-preferences"
@@ -140,7 +140,14 @@
           <tabpanel orient="vertical"><!-- auto export -->
             <vbox flex="1">
               <hbox>
-                <listbox id="better-bibtex-export-list" flex="1" onselect="Zotero.BetterBibTeX.pref.exportSelected()"/>
+                <listbox id="better-bibtex-export-list" flex="1" onselect="Zotero.BetterBibTeX.pref.exportSelected()">
+                  <listcols>
+                    <listcol flex="1"/>
+                  </listcols>
+                  <listhead>
+                    <listheader label="&zotero.better-bibtex.preferences.auto-export.config;"/>
+                  </listhead>
+                </listbox>
                 <groupbox>
                   <caption label="&zotero.better-bibtex.preferences.auto-export.config;"/>
                   <grid>

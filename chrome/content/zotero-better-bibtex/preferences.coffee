@@ -56,26 +56,38 @@ Zotero.BetterBibTeX.pref.update = ->
 
   styles = Zotero.Styles.getVisible().filter((style) -> style.usesAbbreviation)
 
-  listbox = document.getElementById('better-bibtex-abbrev-style')
-  fillList = listbox.children.length is 0
+  stylebox = document.getElementById('better-bibtex-abbrev-style')
+  refill = stylebox.children.length is 0
   selectedStyle = Zotero.BetterBibTeX.pref.get('auto-abbrev.style')
   selectedIndex = -1
   for style, i in styles
-    if fillList
+    if refill
       itemNode = document.createElement('listitem')
       itemNode.setAttribute('value', style.styleID)
       itemNode.setAttribute('label', style.title)
-      listbox.appendChild(itemNode)
+      stylebox.appendChild(itemNode)
     if style.styleID is selectedStyle then selectedIndex = i
   if selectedIndex is -1 then selectedIndex = 0
   @styleChanged(selectedIndex)
 
   window.setTimeout((->
-    listbox.ensureIndexIsVisible(selectedIndex)
-    listbox.selectedIndex = selectedIndex
+    stylebox.ensureIndexIsVisible(selectedIndex)
+    stylebox.selectedIndex = selectedIndex
     return), 0)
+
+  exportlist = document.getElementById('better-bibtex-export-list')
+  refill = (1 for node in exportlist.children when node.nodeName == 'listitem').length is 0
+  Zotero.BetterBibTeX.log('loading exports:', refill, exportlist.children.length)
+  for exp, i in ['Coll 1', 'Coll 2', 'Coll 3']
+    if refill
+      Zotero.BetterBibTeX.log('loading exports:', exp)
+      itemNode = document.createElement('listitem')
+      itemNode.setAttribute('value', exp)
+      itemNode.setAttribute('label', exp)
+      itemNode.setAttribute('class', 'export-state-running')
+      exportlist.appendChild(itemNode)
   return
 
 Zotero.BetterBibTeX.pref.exportSelected = ->
-  listbox = document.getElementById('better-bibtex-export-list')
+  stylebox = document.getElementById('better-bibtex-export-list')
   return
