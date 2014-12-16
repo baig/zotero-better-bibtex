@@ -166,22 +166,33 @@ Zotero.BetterBibTeX.init = ->
   # monkey-patch Zotero.Translate.Base.prototype.translate to capture export data
   Zotero.Translate.Base.prototype.translate = ((original) ->
     return (libraryID, saveAttachments) ->
-      if this.translator?[0] && this.type == 'export' && this.path && this._displayOptions?['Keep updated']
-        # I don't want 'Keep updated' to be remembered as a default
-        try
-          settings = JSON.parse(Zotero.Prefs.get('export.translatorSettings'))
-          if settings['Keep updated']
-            delete settings['Keep updated']
-            Zotero.Prefs.set('export.translatorSettings', JSON.stringify(settings));
-        catch
+      if @translator?[0] && @type == 'export' && @path && @_displayOptions?['Keep updated']
+        collection = @_collection?._id
 
-        # data to define new auto-export
-        config = {
-          target: this.path
-          collection: this._collection?._id
-          context: BBTContext( { translator: this.translator[0].translatorID, options: this._displayOptions, preferences: Zotero.BetterBibTeX.pref.snapshot() } )
-          recursive: Zotero.BetterBibTeX.auto.recursive()
-        }
+        if !collection
+          progressWin = new Zotero.ProgressWindow()
+          #progressWin.changeHeadline(Zotero.getString("save.link"));
+          progressWin.changeHeadline('Auto-export only supported for collections')
+          progressWin.addLines(['Auto-export only supported for collections'])
+          progressWin.show()
+          progressWin.startCloseTimer()
+
+        else
+          # I don't want 'Keep updated' to be remembered as a default
+          try
+            settings = JSON.parse(Zotero.Prefs.get('export.translatorSettings'))
+            if settings['Keep updated']
+              delete settings['Keep updated']
+              Zotero.Prefs.set('export.translatorSettings', JSON.stringify(settings));
+          catch
+
+          # data to define new auto-export
+          config = {
+            target: @path
+            collection: collection
+            context: BBTContext( { id: @translator[0].translatorID, label: @translator[0].label, options: @_displayOptions, preferences: Zotero.BetterBibTeX.pref.snapshot() } )
+            recursive: Zotero.BetterBibTeX.auto.recursive()
+          }
 
       return original.apply(this, arguments)
     )(Zotero.Translate.Base.prototype.translate)

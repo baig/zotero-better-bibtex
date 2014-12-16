@@ -36,7 +36,8 @@ BBTConfig = ->
 
 BBTContext = (config) ->
   context = Object.create(null)
-  context.translator = config.translator ? config.id
+  context.translatorID = config.id
+  context.translator = config.label
 
   Zotero.debug(':::context from ' + JSON.stringify(config))
   allowed = BBTConfig()
