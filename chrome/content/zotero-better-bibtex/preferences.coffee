@@ -33,6 +33,26 @@ Zotero.BetterBibTeX.pref.styleChanged = (index) ->
   Zotero.BetterBibTeX.keymanager.journalAbbrevCache = Object.create(null)
   return
 
+Zotero.BetterBibTeX.pref.clone = (obj) ->
+  clone = Object.create(null)
+  for own key, value of obj
+    clone[key] = value
+  return clone
+
+Zotero.BetterBibTeX.pref._display = (id, text) ->
+  elt = document.getElementById(id)
+  elt.value = text
+  elt.setAttribute('tooltiptext', text) if text != ''
+  return
+
+Zotero.BetterBibTeX.pref._collectionPath = (id) ->
+  return '' unless id
+  coll = Zotero.Collections.get(id)
+  return '' unless coll
+
+  return @_collectionPath(coll.parent) + '/' + coll.name if coll.parent
+  return coll.name
+
 Zotero.BetterBibTeX.pref.update = ->
   serverCheckbox = document.getElementById('id-better-bibtex-preferences-server-enabled')
   serverEnabled = serverCheckbox.checked
@@ -54,7 +74,7 @@ Zotero.BetterBibTeX.pref.update = ->
   document.getElementById('id-zotero-better-bibtex-recursive-warning').setAttribute('hidden', not document.getElementById('id-better-bibtex-preferences-getCollections').checked)
   document.getElementById('id-better-bibtex-preferences-fancyURLs-warning').setAttribute('hidden', not document.getElementById('id-better-bibtex-preferences-fancyURLs').checked)
 
-  styles = Zotero.Styles.getVisible().filter((style) -> style.usesAbbreviation)
+  styles = (style for style in Zotero.Styles.getVisible() when style.usesAbbreviation)
 
   stylebox = document.getElementById('better-bibtex-abbrev-style')
   refill = stylebox.children.length is 0
@@ -82,12 +102,13 @@ Zotero.BetterBibTeX.pref.update = ->
   selectedExport = -1
   for ae in Zotero.BetterBibTeX.DB.query("select * from autoexport order by collection_name, path")
     selectedExport = 0
-    Zotero.BetterBibTeX.log(':::ae', JSON.parse(JSON.stringify(ae)))
+    Zotero.BetterBibTeX.log(':::ae', @clone(ae))
     if refill
       itemNode = document.createElement('listitem')
       itemNode.setAttribute('value', ae.id)
       itemNode.setAttribute('label', "#{ae.collection_name} -> #{ae.path.replace(/^.*[\\\/]/, '')}")
       itemNode.setAttribute('class', "export-state-#{ae.status}")
+      itemNode.setAttribute('tooltiptext', "#{@_collectionPath(ae.collection_id)} -> #{ae.path}")
       exportlist.appendChild(itemNode)
   @exportSelected(selectedIndex) if selectedExport >= 0
 
@@ -102,19 +123,20 @@ Zotero.BetterBibTeX.pref.exportSelected = (index) ->
 
   ae = Zotero.BetterBibTeX.DB.rowQuery('select * from autoexport where id = ?', [selectedItem.getAttribute('value')])
   ae.context = JSON.parse(ae.context)
+  Zotero.BetterBibTeX.log(':::selected', @clone(ae))
 
-  document.getElementById('id-better-bibtex-preferences-auto-export-collection').value = ae.collection_name
-  document.getElementById('id-better-bibtex-preferences-auto-export-target').value = ae.path
-  document.getElementById('id-better-bibtex-preferences-auto-export-translator').value = ae.translator
-  document.getElementById('id-better-bibtex-preferences-auto-export-keyformat').value = ae.citeKeyFormat
-  document.getElementById('id-better-bibtex-preferences-auto-export-skipFields').value = ae.skipFields
-  document.getElementById('id-better-bibtex-preferences-auto-export-preserveCaps').selected = ae['brace-all']
-  document.getElementById('id-better-bibtex-preferences-auto-export-auto-abbrev').selected = ae['auto-abbrev'] && ae.useJournalAbbreviation
-  document.getElementById('id-better-bibtex-preferences-auto-export-auto-abbrev-style').value = ae['auto-abbrev.style']
-  document.getElementById('id-better-bibtex-preferences-auto-export-unicode').value = switch
-    when ae.unicode == '' && ae.exportCharset == 'UTF-8'  then 'yes'
-    when ae.unicode == ''                                 then 'no'
-    else ae.unicode
-  document.getElementById('id-better-bibtex-preferences-auto-export-notes').selected = ae.exportNotes
+  @_display('id-better-bibtex-preferences-auto-export-collection', ae.collection_name)
+  @_display('id-better-bibtex-preferences-auto-export-target', ae.path)
+  @_display('id-better-bibtex-preferences-auto-export-translator', ae.context.translator)
+  @_display('id-better-bibtex-preferences-auto-export-keyformat', ae.context.citeKeyFormat)
+  @_display('id-better-bibtex-preferences-auto-export-skipFields', ae.context.skipfields)
+  document.getElementById('id-better-bibtex-preferences-auto-export-preserveCaps').checked = ae.context['brace-all']
+  document.getElementById('id-better-bibtex-preferences-auto-export-auto-abbrev').checked = ae.context['auto-abbrev'] && ae.context.useJournalAbbreviation
+  @_display('id-better-bibtex-preferences-auto-export-auto-abbrev-style', (style.title for style in Zotero.Styles.getVisible() when style.styleID == ae.context['auto-abbrev.style'])?[0] ? '')
+  @_display('id-better-bibtex-preferences-auto-export-unicode', switch
+    when ae.context.unicode == '' && ae.contex.exportCharset == 'UTF-8'  then 'yes'
+    when ae.context.unicode == ''                                        then 'no'
+    else ae.context.unicode)
+  document.getElementById('id-better-bibtex-preferences-auto-export-notes').checked = ae.context.exportNotes
   return
 
