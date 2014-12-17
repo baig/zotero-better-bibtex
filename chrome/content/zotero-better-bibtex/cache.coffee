@@ -1,25 +1,8 @@
 Zotero.BetterBibTeX.auto = {}
 
 Zotero.BetterBibTeX.auto.add = (state) ->
-  options = Object.create(null, state.options || {})
-  options.translator = state.translator.id
-  delete options['Keep updated']
-  for own key, value of Zotero.BetterBibTeX.pref.snapshot() || {}
-    switch key
-      when 'citeKeyFormat', 'skipfields', 'useprefix', 'brace-all', 'fancyURLs', 'langid', 'attachmentRelativePath', 'auto-abbrev', 'auto-abbrev.style', 'unicode'
-        options[key] = value
-
-  # this makes sure the options stringify to a stable key -- json hashes do not preserve order
-  keys = Object.keys(options)
-  keys.sort()
-  values = (options[key] for key in id)
-
-  spec = {
-    id: JSON.stringify([id, values])
-    path: state.path
-    disabled: if state.collection then false else 'Only export of collections is supported'
-    collection: state.collection
-  }
+  Zotero.BetterBibTeX.DB.query("insert into autoexport (collection_id, collection_name, path, context, recursive, status)
+                               values (?, ?, ?, ?, ?, 'done')", [state.collection.id, state.collection.name, state.target, state.context, @recursive()])
   return
 
 Zotero.BetterBibTeX.auto.recursive = ->

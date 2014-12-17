@@ -10,7 +10,7 @@
     <prefpane id="zotero-prefpane-better-bibtex"
             insertafter="zotero-prefpane-advanced"
             label="&zotero.better-bibtex.preferences.prefpane.better-bibtex;"
-            image="chrome://zotero-better-bibtex/skin/prefs.png"
+            image="chrome://zotero-better-bibtex/skin/bibtex.svg"
             onpaneload="Zotero.BetterBibTeX.pref.update();"
             >
       <preferences id="zotero-preferences-cite">
@@ -195,10 +195,6 @@
                       <row>
                         <label value="&zotero.better-bibtex.unicode;"/>
                         <textbox id="id-better-bibtex-preferences-auto-export-unicode" disabled="true"/>
-                      </row>
-                      <row>
-                        <label value="&zotero.better-bibtex.auto-export.charset;"/>
-                        <textbox id="id-better-bibtex-preferences-auto-export-charset" disabled="true"/>
                       </row>
                       <row>
                         <checkbox id="id-better-bibtex-preferences-auto-export-notes" label="&zotero.better-bibtex.auto-export.notes;" disabled="true"/>

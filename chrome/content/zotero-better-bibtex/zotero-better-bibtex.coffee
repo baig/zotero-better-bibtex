@@ -96,18 +96,16 @@ Zotero.BetterBibTeX.init = ->
   version = @DB.valueQuery("select version from _version_ where tablename = 'keys'")
   if version == 0
     @DB.query('create table keys (itemID primary key, libraryID not null, citekey not null, pinned)')
-    @DB.query("insert or replace into _version_ (tablename, version) values ('keys', 1)")
 
   if version <= 2
     @pref.set('scan-citekeys', true)
-    @DB.query("insert or replace into _version_ (tablename, version) values ('keys', 3)")
 
   if version <= 3
     @DB.query('alter table keys rename to keys2')
     @DB.query('create table keys (itemID primary key, libraryID not null, citekey not null, citeKeyFormat)')
     @DB.query('insert into keys (itemID, libraryID, citekey, citeKeyFormat)
                select itemID, libraryID, citekey, case when pinned = 1 then null else ? end from keys2', [@pref.get('citeKeyFormat')])
-    @DB.query("insert or replace into _version_ (tablename, version) values ('keys', 4)")
+    @DB.query('drop table keys2')
 
   if version <= 4
     @DB.query("
@@ -118,7 +116,21 @@ Zotero.BetterBibTeX.init = ->
         entry not null,
         primary key (itemid, context))
       ")
-    @DB.query("insert or replace into _version_ (tablename, version) values ('keys', 5)")
+
+  if version <= 5
+    @DB.query("
+      create table autoexport (
+        id integer primary key not null,
+        collection_id not null,
+        collection_name not null,
+        path not null,
+        context not null,
+        recursive not null,
+        status not null,
+        unique (collection_id, path, context))
+      ")
+
+  @DB.query("insert or replace into _version_ (tablename, version) values ('keys', 6)")
 
   Zotero.BetterBibTeX.keymanager.reset()
   @DB.query('delete from keys where citeKeyFormat is not null and citeKeyFormat <> ?', [@pref.get('citeKeyFormat')])
@@ -167,17 +179,15 @@ Zotero.BetterBibTeX.init = ->
   Zotero.Translate.Base.prototype.translate = ((original) ->
     return (libraryID, saveAttachments) ->
       if @translator?[0] && @type == 'export' && @path && @_displayOptions?['Keep updated']
-        collection = @_collection?._id
+        progressWin = new Zotero.ProgressWindow()
+        #progressWin.changeHeadline(Zotero.getString("save.link"));
+        progressWin.changeHeadline('Auto-export')
 
-        if !collection
-          progressWin = new Zotero.ProgressWindow()
-          #progressWin.changeHeadline(Zotero.getString("save.link"));
-          progressWin.changeHeadline('Auto-export only supported for collections')
+        if !@_collection?._id
           progressWin.addLines(['Auto-export only supported for collections'])
-          progressWin.show()
-          progressWin.startCloseTimer()
 
         else
+          progressWin.addLines(["Collection #{@_collection._name} set up for auto-export"])
           # I don't want 'Keep updated' to be remembered as a default
           try
             settings = JSON.parse(Zotero.Prefs.get('export.translatorSettings'))
@@ -189,10 +199,13 @@ Zotero.BetterBibTeX.init = ->
           # data to define new auto-export
           config = {
             target: @path
-            collection: collection
+            collection: {id: @_collection?._id, name: @_collection._name}
             context: BBTContext( { id: @translator[0].translatorID, label: @translator[0].label, options: @_displayOptions, preferences: Zotero.BetterBibTeX.pref.snapshot() } )
-            recursive: Zotero.BetterBibTeX.auto.recursive()
           }
+          Zotero.BetterBibTeX.auto.add(config)
+
+        progressWin.show()
+        progressWin.startCloseTimer()
 
       return original.apply(this, arguments)
     )(Zotero.Translate.Base.prototype.translate)
@@ -446,7 +459,6 @@ Zotero.BetterBibTeX.toArray = (item) ->
   throw 'format: no item\n' + (new Error('dummy')).stack if not item.itemType
   return item
 
-require('preferences.coffee')
 require('keymanager.coffee')
 require('web-endpoints.coffee')
 require('debug-bridge.coffee')

@@ -30,7 +30,7 @@ Translator.initialize = ->
   return if @initialized
   @initialized = true
 
-  @caching = Zotero.getHiddenPref("better-bibtex.caching") && @label.indexOf('Better ') == 0
+  @caching = Zotero.getHiddenPref('better-bibtex.caching') && @label.indexOf('Better ') == 0
 
   for own attr, f of @fieldMap or {}
     @BibLaTeXDataFieldMap[f.name] = f if f.name
