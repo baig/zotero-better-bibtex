@@ -35,8 +35,7 @@ Zotero.BetterBibTeX.pref.ZoteroObserver = {
   register: -> Zotero.Prefs.prefBranch.addObserver('', this, false)
   unregister: -> Zotero.Prefs.prefBranch.removeObserver('', this)
   observe: (subject, topic, data) ->
-    if data == 'recursiveCollections'
-      Zotero.BetterBibTeX.log('trigger all auto exports')
+    Zotero.BetterBibTeX.auto.process('recursiveCollections') if data == 'recursiveCollections'
     return
 }
 
@@ -63,6 +62,18 @@ Zotero.BetterBibTeX.formatter = (pattern) ->
   @formatters ?= Object.create(null)
   @formatters[pattern] = BetterBibTeXFormatter.parse(pattern) unless @formatters[pattern]
   return @formatters[pattern]
+
+Zotero.BetterBibTeX.idleService = Components.classes["@mozilla.org/widget/idleservice;1"].getService(Components.interfaces.nsIIdleService);
+
+Zotero.BetterBibTeX.idleObserver = observe: (subject, topic, data) ->
+  switch topic
+    when 'idle'
+      Zotero.BetterBibTeX.auto.idle = true
+      Zotero.BetterBibTeX.auto.process('idle')
+
+    when 'back'
+      Zotero.BetterBibTeX.auto.idle = false
+  return
 
 Zotero.BetterBibTeX.init = ->
   @log("Running init: #{@initialized}")
@@ -212,6 +223,7 @@ Zotero.BetterBibTeX.init = ->
 
   nids = []
   nids.push(Zotero.Notifier.registerObserver(@itemChanged, ['item']))
+  nids.push(Zotero.Notifier.registerObserver(@collectionChanged, ['collection']))
   nids.push(Zotero.Notifier.registerObserver(@itemAdded, ['collection-item']))
   window.addEventListener('unload', ((e) -> Zotero.Notifier.unregisterObserver(id) for id in nids), false)
 
@@ -228,6 +240,8 @@ Zotero.BetterBibTeX.init = ->
       return
   }
   AddonManager.addAddonListener(uninstaller)
+
+  @idleService.addIdleObserver(@idleObserver, 60)
 
   return
 
@@ -254,18 +268,19 @@ Zotero.BetterBibTeX.removeTranslators = ->
 Zotero.BetterBibTeX.itemAdded = {
   notify: (event, type, collection_items) ->
     Zotero.BetterBibTeX.log('::: itemAdded', event, type, collection_items)
-    return unless event == 'add'
+
+    collections = []
 
     for collection_item in collection_items
       [collectionID, itemID] = collection_item.split('-')
-      Zotero.BetterBibTeX.log('::: itemAdded', collectionID, itemID)
+      collections.push(collectionID)
 
+      # aux-scanner only triggers on add
+      continue unless event == 'add'
       collection = Zotero.Collections.get(collectionID)
-      Zotero.BetterBibTeX.log('::: itemAdded collection = ', collection?.id)
       continue unless collection
 
       extra = Zotero.DB.valueQuery("#{Zotero.BetterBibTeX.findExtra} and i.itemID = ?", [itemID])
-      Zotero.BetterBibTeX.log('::: itemAdded extra = ', extra)
       continue unless extra
 
       try
@@ -297,40 +312,58 @@ Zotero.BetterBibTeX.itemAdded = {
         item.setField('extra', "Missing references:\n#{missing.join('\n')}")
         item.save()
 
+    if collections.length != 0
+      collections = ('' + id for id in collections).join(',')
+      Zotero.BetterBibTeX.DB.query("update autoexport set status = 'pending' where collection_id in (#{collections})"
+      Zotero.BetterBibTeX.auto.process('collectionChanged')
     return
 }
 
-Zotero.BetterBibTeX.itemChanged = {}
+Zotero.BetterBibTeX.collectionChanged = notify: (event, type, ids, extraData) ->
+  return unless event == 'delete'
+  return if extraData.length == 0
+  Zotero.BetterBibTeX.DB.query("delete from autoexport where collection_id in (#{('' + id for id in extraData).join(',')})")
 
-Zotero.BetterBibTeX.itemChanged.notify = (event, type, ids, extraData) ->
+Zotero.BetterBibTeX.itemChanged = notify: (event, type, ids, extraData) ->
+  collections = []
+  Zotero.BetterBibTeX.keymanager.reset()
+
   switch event
     when 'delete'
-      for key in extraData
-        v = extraData[key]
-        i = {itemID: key}
-        Zotero.BetterBibTeX.clearKey(i, true)
-      if extraData.length > 0
-        Zotero.BetterBibTeX.DB.query("delete from cache where itemid in (#{('' + id for id in extraData).join(',')})")
+      break if extraData.length == 0
+
+      for id in extraData
+        Zotero.BetterBibTeX.clearKey({itemID: id}, true)
+
+      items = ('' + id for id in extraData).join(',')
+      Zotero.BetterBibTeX.DB.query("delete from cache where itemid in (#{items})")
+
+      collections = Zotero.Collections.getCollectionsContainingItems(extraData, true)
 
     when 'add', 'modify', 'trash'
-      break if ids.length is 0
+      break if ids.length == 0
 
-      ids = '(' + ('' + id for id in ids).join(',') + ')'
+      items = ('' + id for id in ids).join(',')
 
-      Zotero.BetterBibTeX.keymanager.reset()
-      Zotero.BetterBibTeX.DB.query("delete from keys where itemID in #{ids}")
+      collections = Zotero.Collections.getCollectionsContainingItems(ids, true)
+
+      Zotero.BetterBibTeX.DB.query("delete from keys where itemID in (#{items})")
 
       if event != 'trash'
-        for item in Zotero.DB.query("#{Zotero.BetterBibTeX.findKeysSQL} and i.itemID in #{ids}") or []
+        for item in Zotero.DB.query("#{Zotero.BetterBibTeX.findKeysSQL} and i.itemID in (#{items})") or []
           citekey = Zotero.BetterBibTeX.keymanager.extract({extra: item.extra})
           if Zotero.BetterBibTeX.pref.get('key-conflict-policy') == 'change'
             Zotero.BetterBibTeX.DB.query('delete from keys where libraryID = ? and citeKeyFormat is not null and citekey = ?', [item.libraryID, citekey])
             Zotero.BetterBibTeX.DB.query('delete from cache where citekey = ?', [citekey])
           Zotero.BetterBibTeX.DB.query('insert or replace into keys (itemID, libraryID, citekey, citeKeyFormat) values (?, ?, ?, null)', [ item.itemID, item.libraryID, citekey ])
 
-        for item in Zotero.DB.query("select coalesce(libraryID, 0) as libraryID, itemID from items where itemID in #{ids}") or []
+        for item in Zotero.DB.query("select coalesce(libraryID, 0) as libraryID, itemID from items where itemID in (#{items})") or []
           Zotero.BetterBibTeX.keymanager.get(item, 'on-change')
 
+  if collections.length != 0
+    collections = ('' + id for id in collections).join(',')
+    Zotero.BetterBibTeX.DB.query("update autoexport set status = 'pending' where collection_id in (#{collections})"
+    Zotero.BetterBibTeX.auto.process('itemChanged')
   return
 
 Zotero.BetterBibTeX.clearKey = (item, onlyCache) ->
