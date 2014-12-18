@@ -35,7 +35,10 @@ Zotero.BetterBibTeX.pref.ZoteroObserver = {
   register: -> Zotero.Prefs.prefBranch.addObserver('', this, false)
   unregister: -> Zotero.Prefs.prefBranch.removeObserver('', this)
   observe: (subject, topic, data) ->
-    Zotero.BetterBibTeX.auto.process('recursiveCollections') if data == 'recursiveCollections'
+    if data == 'recursiveCollections'
+      recursive = Zotero.BetterBibTeX.auto.recursive()
+      Zotero.BetterBibTeX.DB.execute("update autoexport set recursive = ?, status = 'pending' where recursive <> ?", [recursive, recursive])
+      Zotero.BetterBibTeX.auto.process('recursiveCollections')
     return
 }
 

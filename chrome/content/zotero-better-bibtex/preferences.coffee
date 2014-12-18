@@ -107,7 +107,7 @@ Zotero.BetterBibTeX.pref.update = ->
       itemNode = document.createElement('listitem')
       itemNode.setAttribute('value', ae.id)
       itemNode.setAttribute('label', "#{ae.collection_name} -> #{ae.path.replace(/^.*[\\\/]/, '')}")
-      itemNode.setAttribute('class', "export-state-#{ae.status}")
+      itemNode.setAttribute('class', "export-state-#{if Zotero.BetterBibTeX.auto.running == ae.id then 'running' else ae.status}")
       itemNode.setAttribute('tooltiptext', "#{@_collectionPath(ae.collection_id)} -> #{ae.path}")
       exportlist.appendChild(itemNode)
   @exportSelected(selectedIndex) if selectedExport >= 0

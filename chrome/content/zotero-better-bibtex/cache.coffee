@@ -15,7 +15,11 @@ Zotero.BetterBibTeX.auto.process = (reason) ->
   return if @running
   return if reason == 'idle' && !@idle
 
-  ae = Zotero.BetterBibTeX.DB.rowQuery("select * from autoexport where recursive <> ? or status = 'pending' limit 1", [@recursive(), ])
+  Zotero.BetterBibTeX.log("Auto-export: #{reason}")
+
+  ae = Zotero.BetterBibTeX.DB.rowQuery("select * from autoexport where status == 'pending' limit 1")
+  return unless ae
+  @running = ae.id
 
   # do stuff with first item from ready queue, and kick off new @process according to logic below in the 'done' notifier
 
