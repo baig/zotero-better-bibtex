@@ -30,6 +30,7 @@
         <preference id="pref-better-bibtex-show-citekey" name="extensions.zotero.translators.better-bibtex.show-citekey" type="bool"/>
         <preference id="pref-better-bibtex-caching" name="extensions.zotero.translators.better-bibtex.caching" type="bool"/>
         <preference id="pref-better-bibtex-citekey-conflict" name="extensions.zotero.translators.better-bibtex.key-conflict-policy" type="string"/>
+        <preference id="pref-better-bibtex-auto-export" name="extensions.zotero.translators.better-bibtex.auto-export" type="string"/>
       </preferences>
       <tabbox>
         <tabs>
@@ -56,13 +57,13 @@
                     <label value="&zotero.better-bibtex.cite.format;"/>
                     <textbox id="id-better-bibtex-preferences-citeKeyFormat" preference="pref-better-bibtex-format" oninput="Zotero.BetterBibTeX.pref.update();" onkeypress="setTimeout(Zotero.BetterBibTeX.pref.update, 1);"/>
                   </row>
-                  <row>
+                  <!-- row>
                     <label value="&zotero.better-bibtex.langid;"/>
                     <radiogroup id="id-better-bibtex-preferences-langid" orient="vertical" preference="pref-better-bibtex-langid">
                       <radio id="id-better-bibtex-preferences-langid-babel" label="&zotero.better-bibtex.langid.babel;" value="babel"/>
                       <radio id="id-better-bibtex-preferences-langid-polyglossia" label="&zotero.better-bibtex.langid.polyglossia;" value="polyglossia"/>
                     </radiogroup>
-                  </row>
+                  </row -->
                   <row>
                     <label value="&zotero.better-bibtex.pin-citekeys;"/>
                     <radiogroup id="id-better-bibtex-preferences-pin-citekeys" orient="vertical" preference="pref-better-bibtex-pin-citekeys" oncommand="Zotero.BetterBibTeX.pref.update();">
@@ -145,6 +146,14 @@
           </tabpanel>
           <tabpanel orient="vertical"><!-- auto export -->
             <vbox flex="1">
+              <hbox>
+                <label value="&zotero.better-bibtex.prefs.auto-export;"/>
+                <radiogroup id="id-better-bibtex-preferences-auto-export" orient="horizontal" preference="pref-better-bibtex-auto-export">
+                  <radio id="id-better-bibtex-preferences-auto-export-off" label="&zotero.better-bibtex.prefs.auto-export.off;" value="off"/>
+                  <radio id="id-better-bibtex-preferences-auto-export-immediate" label="&zotero.better-bibtex.prefs.auto-export.immediate;" value="immediate"/>
+                  <radio id="id-better-bibtex-preferences-auto-export-idle" label="&zotero.better-bibtex.prefs.auto-export.idle;" value="idle"/>
+                </radiogroup>
+              </hbox>
               <hbox>
                 <listbox id="better-bibtex-export-list" flex="1" onselect="Zotero.BetterBibTeX.pref.exportSelected()">
                   <listcols>
