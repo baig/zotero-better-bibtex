@@ -21,7 +21,7 @@ Zotero.BetterBibTeX.auto.process = (reason) ->
 
   ae = Zotero.BetterBibTeX.DB.rowQuery("select * from autoexport where status == 'pending' limit 1")
   return unless ae
-  @running = ae.id
+  @running = '' + ae.id
 
   translation = new Zotero.Translate.Export()
   translation.setCollection(Zotero.Collections.get(ae.collection_id))
@@ -30,7 +30,8 @@ Zotero.BetterBibTeX.auto.process = (reason) ->
   translation.setDisplayOptions(JSON.parse(ae.context))
 
   translation.setHandler('done', (obj, worked) ->
-    Zotero.BetterBibTeX.DB.query('update autoexport set status = ? where id = ?', [(if worked then 'done' else 'error'), Zotero.BetterBibTeX.auto.running.id])
+    Zotero.BetterBibTeX.DB.query('update autoexport set status = ? where id = ?', [(if worked then 'done' else 'error'), Zotero.BetterBibTeX.auto.running])
+    Zotero.BetterBibTeX.auto.running = null
     Zotero.BetterBibTeX.auto.process(reason)
     return
   )
