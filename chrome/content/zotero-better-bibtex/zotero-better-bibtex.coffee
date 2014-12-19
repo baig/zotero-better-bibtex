@@ -25,9 +25,12 @@ Zotero.BetterBibTeX.pref.observer = {
   register: -> Zotero.BetterBibTeX.pref.prefs.addObserver('', this, false)
   unregister: -> Zotero.BetterBibTeX.pref.prefs.removeObserver('', this)
   observe: (subject, topic, data) ->
-    if data == 'citeKeyFormat'
-      Zotero.BetterBibTeX.keymanager.reset()
-      Zotero.BetterBibTeX.DB.query('delete from keys where citeKeyFormat is not null and citeKeyFormat <> ?', [Zotero.BetterBibTeX.pref.get('citeKeyFormat')])
+    switch data
+      when 'citeKeyFormat'
+        Zotero.BetterBibTeX.keymanager.reset()
+        Zotero.BetterBibTeX.DB.query('delete from keys where citeKeyFormat is not null and citeKeyFormat <> ?', [Zotero.BetterBibTeX.pref.get('citeKeyFormat')])
+      when 'auto-export'
+        Zotero.BetterBibTeX.auto.process()
     return
 }
 
@@ -66,7 +69,7 @@ Zotero.BetterBibTeX.formatter = (pattern) ->
   @formatters[pattern] = BetterBibTeXFormatter.parse(pattern) unless @formatters[pattern]
   return @formatters[pattern]
 
-Zotero.BetterBibTeX.idleService = Components.classes["@mozilla.org/widget/idleservice;1"].getService(Components.interfaces.nsIIdleService);
+Zotero.BetterBibTeX.idleService = Components.classes["@mozilla.org/widget/idleservice;1"].getService(Components.interfaces.nsIIdleService)
 
 Zotero.BetterBibTeX.idleObserver = observe: (subject, topic, data) ->
   switch topic
@@ -317,15 +320,14 @@ Zotero.BetterBibTeX.itemAdded = {
 
     if collections.length != 0
       collections = ('' + id for id in collections).join(',')
-      Zotero.BetterBibTeX.DB.query("update autoexport set status = 'pending' where collection_id in (#{collections})"
+      Zotero.BetterBibTeX.DB.query("update autoexport set status = 'pending' where collection_id in (#{collections})")
       Zotero.BetterBibTeX.auto.process('collectionChanged')
     return
 }
 
 Zotero.BetterBibTeX.collectionChanged = notify: (event, type, ids, extraData) ->
-  return unless event == 'delete'
-  return if extraData.length == 0
-  Zotero.BetterBibTeX.DB.query("delete from autoexport where collection_id in (#{('' + id for id in extraData).join(',')})")
+  Zotero.BetterBibTeX.DB.query("delete from autoexport where collection_id in (#{('' + id for id in extraData).join(',')})") if event == 'delete' && extraData.length > 0
+  return
 
 Zotero.BetterBibTeX.itemChanged = notify: (event, type, ids, extraData) ->
   collections = []
@@ -365,7 +367,7 @@ Zotero.BetterBibTeX.itemChanged = notify: (event, type, ids, extraData) ->
 
   if collections.length != 0
     collections = ('' + id for id in collections).join(',')
-    Zotero.BetterBibTeX.DB.query("update autoexport set status = 'pending' where collection_id in (#{collections})"
+    Zotero.BetterBibTeX.DB.query("update autoexport set status = 'pending' where collection_id in (#{collections})")
     Zotero.BetterBibTeX.auto.process('itemChanged')
   return
 

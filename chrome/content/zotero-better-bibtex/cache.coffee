@@ -13,7 +13,9 @@ Zotero.BetterBibTeX.auto.recursive = ->
 
 Zotero.BetterBibTeX.auto.process = (reason) ->
   return if @running
-  return if reason == 'idle' && !@idle
+  switch Zotero.BetterBibTeX.pref.get('auto-export')
+    when 'off'  then return
+    when 'idle' then return unless @idle
 
   Zotero.BetterBibTeX.log("Auto-export: #{reason}")
 
@@ -21,13 +23,19 @@ Zotero.BetterBibTeX.auto.process = (reason) ->
   return unless ae
   @running = ae.id
 
-  # do stuff with first item from ready queue, and kick off new @process according to logic below in the 'done' notifier
+  translation = new Zotero.Translate.Export()
+  translation.setCollection(Zotero.Collections.get(ae.collection_id))
+  translation.setLocation(ae.path) # TODO: nsiFile
+  translation.setTranslator(ae.translatorID)
+  translation.setDisplayOptions(JSON.parse(ae.context))
 
-  switch Zotero.BetterBibTeX.pref.get('auto-export')
-    when 'off'  then return
-    when 'idle' then return unless @idle
-    else              false
-  #@process(reason)
+  translation.setHandler('done', (obj, worked) ->
+    Zotero.BetterBibTeX.DB.query('update autoexport set status = ? where id = ?', [(if worked then 'done' else 'error'), Zotero.BetterBibTeX.auto.running.id])
+    Zotero.BetterBibTeX.auto.process(reason)
+    return
+  )
+  translation.translate()
+  return
 
 Zotero.BetterBibTeX.cache = {}
 
