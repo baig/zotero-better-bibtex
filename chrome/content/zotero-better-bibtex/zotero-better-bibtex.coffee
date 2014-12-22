@@ -224,6 +224,13 @@ Zotero.BetterBibTeX.init = ->
         progressWin.show()
         progressWin.startCloseTimer()
 
+      # add exportPath for relativizing export paths (#126)
+      if @_displayOptions && @translator?[0]
+        for own name, header of Zotero.BetterBibTeX.translators
+          if header.translatorID == @translator[0].translatorID
+            @_displayOptions.exportPath = @path
+            break
+
       return original.apply(this, arguments)
     )(Zotero.Translate.Base.prototype.translate)
 
