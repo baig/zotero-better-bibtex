@@ -234,6 +234,8 @@ Zotero.BetterBibTeX.init = ->
       return original.apply(this, arguments)
     )(Zotero.Translate.Base.prototype.translate)
 
+  @schomd.init()
+
   nids = []
   nids.push(Zotero.Notifier.registerObserver(@itemChanged, ['item']))
   nids.push(Zotero.Notifier.registerObserver(@collectionChanged, ['collection']))
@@ -506,5 +508,6 @@ Zotero.BetterBibTeX.toArray = (item) ->
 
 require('keymanager.coffee')
 require('web-endpoints.coffee')
+require('schomd.coffee')
 require('debug-bridge.coffee')
 require('cache.coffee')
