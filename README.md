@@ -2,14 +2,9 @@
 
 Recent changes:
 
-## 0.6.65
+## 0.7.1
 
-* Be robust against misconfigured journal abbreviator (#127)
-
-**0.6.64**
-
-* hide fallback 'zotero-null-id' keys in the 'extra' column
-* extract cited items to a new .bib file (#118, LaTeX AUX scanner)
+* Preliminary Scholarly Markdown support
 
 [more](https://zotplus.github.io/better-bibtex/changelog.html)
 
@@ -73,6 +68,7 @@ If you'd really just rather hand-code your LaTeX constructs, BBT makes that poss
 * **Fixes date field exports**: export dates like 'forthcoming' as 'forthcoming' instead of empty.
 * **[Pull export](https://zotplus.github.io/better-bibtex/Pull-Export)** from the embedded webserver
 * Automatic **[journal abbreviation](https://zotplus.github.io/better-bibtex/Citation-Keys.html)** to bring BibTeX export on par with the Word integration
+* Preliminary scholarly markdown support through integration with [Zotero Citations for Atom](https://atom.io/packages/zotero-citations)
 
 # Configuration
 
@@ -81,8 +77,8 @@ The Better BibTeX [configuration pane](https://zotplus.github.io/better-bibtex/C
 # Installation (one-time)
 
 After installation, the plugin will auto-update to newer releases. Install by downloading the [latest
-version](https://zotplus.github.io/better-bibtex/zotero-better-bibtex-0.6.66.xpi)
-(**0.6.66**).
+version](https://zotplus.github.io/better-bibtex/zotero-better-bibtex-0.7.4.xpi)
+(**0.7.4**).
 If you are not prompted with a Firefox installation dialog then double-click the
 downloaded xpi; Firefox ought to start and present you with the installation dialog.
 
@@ -109,7 +105,6 @@ prefer fuzzy ones over missed ones.
   * Caching (required to keep performance acceptable): DONE
   * GUI for it all: DONE
   * Automated export
-* Scholarly Markdown support
 * add "citekey" field to reference editor
 * sync citekey cleanly without abusing the "extra" field
 * faster journal abbreviator using the [LTWA](http://www.issn.org/services/online-services/access-to-the-ltwa/)

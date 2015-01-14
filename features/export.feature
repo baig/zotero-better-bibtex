@@ -238,3 +238,13 @@ Scenario: Malformed HTML
 Scenario: Be robust against misconfigured journal abbreviator/html parser failure
   When I import 1 reference from 'export/Be robust against misconfigured journal abbreviator #127.json'
   Then a library export using 'Better BibLaTeX' should match 'export/Be robust against misconfigured journal abbreviator #127.bib'
+
+@130
+Scenario: Exporting of single-field author lacks braces #130
+  When I import 1 reference from 'export/Exporting of single-field author lacks braces #130.json'
+  Then a library export using 'Better BibLaTeX' should match 'export/Exporting of single-field author lacks braces #130.bib'
+
+@132
+Scenario: Export Newspaper Article misses section field #132
+  When I import 1 reference from 'export/Export Newspaper Article misses section field #132.json'
+  Then a library export using 'Better BibLaTeX' should match 'export/Export Newspaper Article misses section field #132.bib'
