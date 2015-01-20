@@ -24,6 +24,7 @@ BBTConfig = ->
       unicode: 'unicode'
       pinKeys: 'pin-citekeys'
       rawImport: 'raw-imports'
+      DOIandURL: 'doi-and-url'
     }
     options: {
       useJournalAbbreviation: 'useJournalAbbreviation'

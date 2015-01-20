@@ -57,3 +57,7 @@
 <!ENTITY zotero.better-bibtex.auto-export.target "Output file">
 <!ENTITY zotero.better-bibtex.auto-export.translator "Translator">
 
+<!ENTITY zotero.better-bibtex.doi-and-url "When a reference has both a DOI and an URL, export">
+<!ENTITY zotero.better-bibtex.doi-and-url.both "both">
+<!ENTITY zotero.better-bibtex.doi-and-url.DOI "DOI">
+<!ENTITY zotero.better-bibtex.doi-and-url.URL "URL">

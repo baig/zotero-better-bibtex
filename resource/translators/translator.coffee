@@ -173,20 +173,38 @@ class Reference
     @itemtype = Translator.typeMap.Zotero2BibTeX[@item.itemType] or 'misc'
 
     if @item.extra
+      fields = []
       m = /biblatexdata\[([^\]]+)\]/.exec(@item.extra)
       if m
         @item.extra = @item.extra.replace(m[0], '').trim()
         for assignment in m[1].split(';')
-          data = assignment.match(/^([^=]+)=\s*(.*)/).slice(1)
-          field = {
-            name: data[0]
-            value: data[1]
-          }
+          data = assignment.match(/^([^=]+)=\s*(.*)/)
+          unless data
+            Zotero.debug("Not an assignment: #{assignment}")
+            continue
 
-          if Translator.BibLaTeXDataFieldMap[field.name]
-            field = @field(Translator.BibLaTeXDataFieldMap[field.name], data[1])
+          fields.push({ name: data[1], value: data[2] })
 
-          @add(field)
+      m = /(biblatexdata)({[\s\S]+})/.exec(@item.extra)
+      if m
+        prefix = m[1]
+        data = m[2]
+        while data.indexOf('}') >= 0
+          try
+            json = JSON.parse(data)
+          catch
+            json = null
+          break if json
+          data = data.replace(/[^}]*}$/, '')
+        if json
+          @item.extra = @item.extra.replace(prefix + data, '').trim()
+          for name, value of json
+            fields.push({name: name, value: value})
+
+      for field in fields
+        if Translator.BibLaTeXDataFieldMap[field.name]
+          field = @field(Translator.BibLaTeXDataFieldMap[field.name], field.value)
+        @add(field)
 
     for own attr, f of Translator.fieldMap or {}
       if f.name and not @has[f.name]
@@ -301,6 +319,14 @@ Reference::add = (field) ->
 
 Reference::complete = ->
   @add({name: 'type', value: @itemtype}) if @fields.length == 0
+
+  if Translator.DOIandURL != 'both'
+    doi = (i for field, i in @fields when field.name == 'doi')
+    url = (i for field, i in @fields when field.name == 'url')
+    if doi.length > 0 && url.length > 0
+      switch Translator.DOIandURL
+        when 'doi' then @fields.splice(url[0], 1)
+        when 'url' then @fields.splice(doi[0], 1)
 
   # sort fields for stable tests
   if Translator.testmode
