@@ -1,6 +1,18 @@
 Components.utils.import('resource://gre/modules/Services.jsm')
 Components.utils.import('resource://gre/modules/AddonManager.jsm')
 
+# Debug
+Components.utils.import('resource://gre/modules/devtools/dbg-server.jsm')
+Components.utils.import("resource://gre/modules/devtools/Console.jsm")
+if !DebuggerServer.initialized
+  DebuggerServer.init()
+  # Don't specify a window type parameter below if "navigator:browser"
+  # is suitable for your app.
+  DebuggerServer.addBrowserActors("myXULRunnerAppWindowType")
+
+DebuggerServer.openListener(6000)
+# Debug
+
 require('Formatter.js')
 
 Zotero.BetterBibTeX = {}

@@ -16,3 +16,11 @@ pref('extensions.zotero.translators.better-bibtex.raw-imports', false)
 pref('extensions.zotero.translators.better-bibtex.show-citekey', false)
 pref('extensions.zotero.translators.better-bibtex.key-conflict-policy', 'keep')
 pref('extensions.zotero.translators.better-bibtex.doi-and-url', 'both')
+
+# debugging prefs
+pref("browser.dom.window.dump.enabled", true)
+pref("javascript.options.showInConsole", true)
+pref("javascript.options.strict", true)
+pref("nglayout.debug.disable_xul_cache", true)
+pref("nglayout.debug.disable_xul_fastload", true)
+pref("devtools.debugger.remote-enabled", true)
